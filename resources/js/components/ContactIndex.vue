@@ -1,5 +1,5 @@
 <template>
-	<div>Contact List</div>
+	<div>Контакти</div>
 </template>
 <script>
   export default {
