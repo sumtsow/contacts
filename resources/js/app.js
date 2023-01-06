@@ -9,11 +9,24 @@ import { createRouter } from 'vue-router';
 import { createWebHashHistory } from 'vue-router';
 import Navbar from './components/Navbar.vue';
 import IndexContact from './components/ContactIndex.vue';
+import IndexSubscriber from './components/admin/SubscriberIndex.vue';
+import IndexGroup from './components/admin/GroupIndex.vue';
+import IndexType from './components/admin/TypeIndex.vue';
 
 const routes = [
   {	path: '/',
     component: IndexContact,
-    name: 'index' }
+    name: 'index' },
+  {	path: '/admin/group',
+    component: IndexGroup,
+    name: 'index-group' },
+  {	path: '/admin/type',
+    component: IndexType,
+    name: 'index-type' },
+  {	path: '/admin',
+    component: IndexSubscriber,
+    name: 'index-subscriber' },
+
 ];
 
 const router = createRouter({

@@ -20,7 +20,9 @@ class CreateGroupTable extends Migration
             $table->unsignedBigInteger('parent_id');
             $table->id();
             $table->string('title');
-            $table->timestamps();
+            $table->boolean('enabled')->default(1);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
             $table->foreign('parent_id')->references('id')->on('group');
         });
     }

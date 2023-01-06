@@ -19,11 +19,15 @@ class CreateContactTable extends Migration
             $table->collation = 'utf8mb4_unicode_ci';
             $table->unsignedBigInteger('type_id');
             $table->unsignedBigInteger('subscriber_id');
+            $table->unsignedBigInteger('user_id');
             $table->id();
             $table->string('value');
-            $table->timestamps();
+            $table->boolean('enabled')->default(1);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
             $table->foreign('type_id')->references('id')->on('type');
             $table->foreign('subscriber_id')->references('id')->on('subscriber');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

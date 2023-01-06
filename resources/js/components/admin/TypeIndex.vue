@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Контакти</h1>
+    <h1>Редагувати типи</h1>
   </div>
 </template>
 <script>

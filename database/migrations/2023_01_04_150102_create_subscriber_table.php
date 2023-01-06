@@ -21,7 +21,9 @@ class CreateSubscriberTable extends Migration
             $table->unsignedBigInteger('group_id');
             $table->string('lastname');
             $table->string('firstname');
-            $table->timestamps();
+            $table->boolean('enabled')->default(1);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
             $table->foreign('group_id')->references('id')->on('group');
         });
     }
