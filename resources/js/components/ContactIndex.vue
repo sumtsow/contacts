@@ -1,5 +1,7 @@
 <template>
-	<div>Контакти</div>
+  <div>
+    <h1>Контакти</h1>
+  </div>
 </template>
 <script>
   export default {

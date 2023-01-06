@@ -1,14 +1,13 @@
 require('./bootstrap');
 
 import Alpine from 'alpinejs';
-
 window.Alpine = Alpine;
-
 Alpine.start();
 
 import { createApp } from 'vue';
 import { createRouter } from 'vue-router';
 import { createWebHashHistory } from 'vue-router';
+import Navbar from './components/Navbar.vue';
 import IndexContact from './components/ContactIndex.vue';
 
 const routes = [
@@ -22,6 +21,12 @@ const router = createRouter({
 	routes
 });
 
-const app = createApp({})
-        .use(router)
-        .mount('#app');
+const app = createApp({
+  components: {
+    Navbar,
+    //Footer
+  }
+})
+  .use(router);
+
+app.mount('#app');
