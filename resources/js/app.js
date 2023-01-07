@@ -48,7 +48,6 @@ const router = createRouter({
 const app = createApp({
   components: {
     Navbar,
-    //Footer
   }
 })
   .use(router);

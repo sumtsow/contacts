@@ -33,7 +33,7 @@
  
 <script>
 	export default {
-		data: function () {
+		data() {
 			return {
               	user: document.querySelector('meta[name="user"]').getAttribute('content'),
 				csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
