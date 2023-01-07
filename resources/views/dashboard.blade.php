@@ -14,8 +14,8 @@
         <h2>Редагувати</h2>
         <ul class="list-group">
           <a href="/#admin" class="list-group-item list-group-item-action">Контакти</a>
-          <a href="/#admin/group" class="list-group-item list-group-item-action">Групи</a>
-          <a href="/#admin/type" class="list-group-item list-group-item-action">Типи</a>
+          <a href="/#admin/groups" class="list-group-item list-group-item-action">Групи</a>
+          <a href="/#admin/types" class="list-group-item list-group-item-action">Типи</a>
         </ul>
       </div>
     </div>

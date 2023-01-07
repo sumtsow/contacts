@@ -20,10 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/contact', [ContactController::class, 'index']);
+Route::get('/contacts', [ContactController::class, 'index']);
 
-Route::get('/group', [GroupController::class, 'index']);
+Route::get('/groups', [GroupController::class, 'index']);
 
-Route::get('/subscriber', [SubscriberController::class, 'index']);
+Route::get('/subscribers', [SubscriberController::class, 'index']);
 
-Route::get('/type', [TypeController::class, 'index']);
+Route::get('/types', [TypeController::class, 'index']);
