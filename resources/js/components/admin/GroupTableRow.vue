@@ -1,5 +1,5 @@
 <template>
-  <tr :ref="'row-' + group.id" class="position-relative" :class="{ 'text-muted': (group && !group.enabled) }" :id="'group-' + group.id" data-bs-toggle="modal" data-bs-target="#groupEditModal" style="cursor: pointer" @click="handler(group)">
+  <tr class="position-relative" :class="{ 'text-muted': (group && !group.enabled) }" data-bs-toggle="modal" data-bs-target="#groupEditModal" style="cursor: pointer" @click="handler(group)">
       <td>{{ group.id }}</td>
       <td>{{ group.title }}</td>
       <td>{{ parent ? parent.title : '' }}</td>
@@ -13,7 +13,7 @@
       <td>{{ new Date(group.updated_at).toLocaleString() }}</td>
   </tr>
   <template v-for="child of group.children">
-    <table-row :group="child" :parent="group" :handler="handler"></table-row>
+    <group-table-row :group="child" :parent="group" :handler="handler"></group-table-row>
   </template>
 </template>
  

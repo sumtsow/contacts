@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use App\Http\Requests\StoreGroupRequest;
-use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Type;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreTypeRequest;
 
 class TypeController extends Controller
 {
@@ -17,48 +17,23 @@ class TypeController extends Controller
       return response()->json(Type::all());
     }
 
+
     /**
-     * Store a newly created resource in storage.
+     * Update existing or store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTypeRequest $request, int $id)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Type  $type
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Type $type)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Type  $type
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Type $type)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Type  $type
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Type $type)
-    {
-        //
+      if ($id) {
+        $type = Type::findOrFail($id);
+      } else {
+        $type = new Type();
+      }
+      $type->title = $request->title;
+      $type->enabled = intval($request->enabled);
+			$type->save();
+      return response()->json([ $type ]);
     }
 }

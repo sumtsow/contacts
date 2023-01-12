@@ -23,7 +23,7 @@
         </thead>
         <tbody>
         <template v-for="group of groups">
-          <table-row :group="group" parent="null" :handler="selectGroup"></table-row>
+          <group-table-row :group="group" parent="null" :handler="selectGroup"></group-table-row>
         </template>
         </tbody>
       </table>
@@ -70,11 +70,11 @@
 </template>
 <script>
   import Breadcrumbs from '../Breadcrumbs.vue';
-  import TableRow from '../TableRow.vue';
+  import GroupTableRow from './GroupTableRow.vue';
   export default {
     components: {
       Breadcrumbs,
-      TableRow
+      GroupTableRow
     },
     data() {
       return {
@@ -92,7 +92,6 @@
 				},
 				currentGroup: {},
 				prevState: {},
-        selectedId: null,
       };
     },
     mounted() {
@@ -120,9 +119,6 @@
             alert("Could not load groups!");
           });
       },
-      getParents() {
-        //
-      },
 			pushState() {
 				this.prevState.enabled = this.currentGroup.enabled;
 				this.prevState.title = this.currentGroup.title;
@@ -133,9 +129,11 @@
       },
       saveGroup() {
         if (!this.currentGroup) return;
+				var id = this.currentType.id ? parseInt(this.currentType.id, 10) : 0;
+				if (isNaN(id)) return;
         this.currentGroup._token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         var app = this;
-        axios.post('/type/' + this.currentGroup.id, this.currentGroup)
+        axios.post('/group/' + id, this.currentGroup)
           .then(function (resp) {
             app.getGroups();
           })
