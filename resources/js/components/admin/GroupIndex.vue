@@ -23,7 +23,7 @@
         </thead>
         <tbody>
         <template v-for="group of groups">
-          <table-row :group="group" :groups="groups" parent="null" :handler="selectGroup"></table-row>
+          <table-row :group="group" parent="null" :handler="selectGroup"></table-row>
         </template>
         </tbody>
       </table>
@@ -52,7 +52,7 @@
               <label class="col-form-label col-4 text-right" label-for="group-select">Група</label>
               <select v-model="currentGroup.parent_id" class="col form-select form-select-sm" id="group-select">
 								<template v-for="item in groupsSelectOptions">
-                <option v-if="item.id !== currentGroup.id" :value="item.id">
+                <option v-if="!item.id || item.id !== currentGroup.id" :value="item.id">
                   {{ item.title }}
                 </option>
 								</template>
@@ -102,7 +102,7 @@
     },
     methods: {
       clearGroup() {
-        Object.assign(this.currentGroup, this.emptyGroup);
+        this.currentGroup = Object.assign({}, this.emptyGroup);
       },
       getGroups(all) {
 				var app = this;

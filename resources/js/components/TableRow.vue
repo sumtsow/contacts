@@ -13,12 +13,12 @@
       <td>{{ new Date(group.updated_at).toLocaleString() }}</td>
   </tr>
   <template v-for="child of group.children">
-    <table-row :group="child" :groups="groups" :parent="group" :handler="handler"></table-row>
+    <table-row :group="child" :parent="group" :handler="handler"></table-row>
   </template>
 </template>
  
 <script>
 	export default {
-		props: [ 'group', 'groups', 'parent', 'handler' ],
+		props: [ 'group', 'parent', 'handler' ],
 	};
 </script>
