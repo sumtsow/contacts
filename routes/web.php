@@ -27,6 +27,8 @@ Route::get('/dashboard', function () {
 
 Route::post('/group/{id}', [GroupController::class, 'store'])->where('id', '[0-9]+');
 
+Route::post('/subscriber/{id}', [SubscriberController::class, 'store'])->where('id', '[0-9]+');
+
 Route::post('/type/{id}', [TypeController::class, 'store'])->where('id', '[0-9]+');
 
 require __DIR__.'/auth.php';

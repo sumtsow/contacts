@@ -21,7 +21,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="type of types" class="position-relative" :class="{ 'text-muted': !type.enabled }" :id="'type-' + type.id" data-bs-toggle="modal" data-bs-target="#typeEditModal" @click.prevent="selectType(type)" style="cursor: pointer">
+          <tr v-for="type of types" class="position-relative" :class="{ 'text-muted': !type.enabled }" data-bs-toggle="modal" data-bs-target="#typeEditModal" @click.prevent="selectType(type)" style="cursor: pointer">
               <td>{{ type.id }}</td>
               <td>{{ type.title }}</td>
               <td>

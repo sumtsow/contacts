@@ -22,7 +22,7 @@ class GroupController extends Controller
     /**
      * Update existing or store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreGroupRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreGroupRequest $request, int $id)

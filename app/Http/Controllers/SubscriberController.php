@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Subcriber;
-use Illuminate\Http\Request;
+use App\Models\Subscriber;
+use App\Http\Requests\StoreSubscriberRequest;
 
 class SubscriberController extends Controller
 {
@@ -14,72 +14,27 @@ class SubscriberController extends Controller
      */
     public function index()
     {
-      return response()->json(Subcriber::all());
+      return response()->json(Subscriber::all());
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Update existing or store a newly created resource in storage.
      *
+     * @param  \App\Http\Requests\StoreSubscriberRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function store(StoreSubscriberRequest $request, int $id)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Subcriber  $subcriber
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Subcriber $subcriber)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Subcriber  $subcriber
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Subcriber $subcriber)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Subcriber  $subcriber
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Subcriber $subcriber)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Subcriber  $subcriber
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Subcriber $subcriber)
-    {
-        //
+      if ($id) {
+        $subscriber = Subscriber::findOrFail($id);
+      } else {
+        $subscriber = new Subscriber();
+      }
+			$subscriber->group_id = $request->group_id;
+      $subscriber->firstname = $request->firstname;
+			$subscriber->lastname = $request->lastname ?? '';
+      $subscriber->enabled = intval($request->enabled);
+			$subscriber->save();
+      return response()->json([ $subscriber ]);
     }
 }

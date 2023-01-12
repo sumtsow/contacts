@@ -17,11 +17,10 @@ class TypeController extends Controller
       return response()->json(Type::all());
     }
 
-
     /**
      * Update existing or store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreTypeRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(StoreTypeRequest $request, int $id)

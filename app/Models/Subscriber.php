@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Subcriber extends Model
+class Subscriber extends Model
 {
     use HasFactory;
     protected $table = 'subscriber';
+		protected $with = ['group'];
     
     public function contact()
 	{

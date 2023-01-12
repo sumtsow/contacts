@@ -13,8 +13,8 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>ID&nbsp;&uarr;</th>
-            <th>Титул</th>
+            <th>ID</th>
+            <th>Титул&nbsp;&uarr;</th>
             <th>Група</th>
             <th>Статус</th>
             <th>Створено</th>
@@ -129,7 +129,7 @@
       },
       saveGroup() {
         if (!this.currentGroup) return;
-				var id = this.currentType.id ? parseInt(this.currentType.id, 10) : 0;
+				var id = this.currentGroup.id ? parseInt(this.currentGroup.id, 10) : 0;
 				if (isNaN(id)) return;
         this.currentGroup._token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         var app = this;
