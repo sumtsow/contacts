@@ -16,7 +16,7 @@
                 <a class="dropdown-item" href="/dashboard">Домашня</a>
               </li>
               <li>
-                <a class="dropdown-item" href="#" v-on:click.prevent="logOut">Вийти</a>
+                <a class="dropdown-item" href="#" @click.prevent="logOut">Вийти</a>
               </li>
             </ul>
           </li>
@@ -26,7 +26,7 @@
       <a v-else class="nav-link ms-3" href="/login">Увійти</a>
     </div>
     <form class="d-none" name="logout" action="/logout" method="post">
-      <input type="hidden" name="_token" v-bind:value="csrf" />
+      <input type="hidden" name="_token" :value="csrf" />
     </form>
   </nav>
 </template>
@@ -38,9 +38,6 @@
               	user: document.querySelector('meta[name="user"]').getAttribute('content'),
 				csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
 			};
-		},
-		mounted() {
-          //
 		},
 		methods: {
 			logOut() {

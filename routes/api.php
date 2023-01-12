@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/contacts', [ContactController::class, 'index']);
 
-Route::get('/groups', [GroupController::class, 'index']);
+Route::get('/groups/{all?}', [GroupController::class, 'index'])->where('all', '[0, 1]*');
 
 Route::get('/subscribers', [SubscriberController::class, 'index']);
 

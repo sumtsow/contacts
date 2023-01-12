@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreGroupRequest;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -12,74 +13,30 @@ class GroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($all = null)
     {
-      return response()->json(Group::all());
+			$query = Group::orderBy('title');
+			if (!$all) $query->where('parent_id', null);
+      return response()->json($query->get());
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Update existing or store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreGroupRequest $request, int $id)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Group $group)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Group $group)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Group $group)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Group $group)
-    {
-        //
+      if ($id) {
+        $group = Group::findOrFail($id);
+      } else {
+        $group = new Group();
+      }
+      $group->title = $request->title;
+      $group->enabled = intval($request->enabled);
+      $group->parent_id = $request->parent_id ? intval($request->parent_id) : null;
+			if ($group->parent_id !== $id) $group->save();
+      return response()->json([ $group->id ]);
     }
 }

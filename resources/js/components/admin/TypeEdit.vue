@@ -15,7 +15,7 @@
         breadcrumbs: [
           { href: '/dashboard', text: 'Домашня' },
           { href: '/#admin/types', text: 'Типи' },
-          { href: false, text: 'Тип' + this.$route.params.id},
+          { href: false, text: 'Тип ' + this.$route.params.id},
         ],
         type: {
           id: this.$route.params.id,

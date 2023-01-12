@@ -15,7 +15,7 @@
         breadcrumbs: [
           { href: '/dashboard', text: 'Домашня' },
           { href: '/#admin/groups', text: 'Групи' },
-          { href: false, text: 'Група' + this.$route.params.id},
+          { href: false, text: 'Група ' + this.$route.params.id},
         ],
         group: {
           id: this.$route.params.id,

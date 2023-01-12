@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,5 +24,7 @@ Route::get('/welcome', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+Route::post('/type/{id}', [GroupController::class, 'store'])->where('id', '[0-9]+');
 
 require __DIR__.'/auth.php';

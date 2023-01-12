@@ -16,15 +16,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="type of types">
+          <tr v-for="type of types" class="position-relative" :class="{ 'text-muted': !type.enabled }" :id="'group-' + type.id">
               <td>{{ type.id }}</td>
               <td>
-                <router-link :to="{name: 'edit-type', params: {id: type.id}}">{{ type.title }}</router-link>
+                <router-link :to="{name: 'edit-type', params: {id: type.id}}" class="stretched-link text-dark">{{ type.title }}</router-link>
               </td>
               <td>
                 <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" v-bind:id="['enabled-' + type.id]" v-bind:checked="type.enabled == 1" disabled />
-                  <label class="form-check-label" v-bind:for="['enabled-' + type.id]" />
+                  <input class="form-check-input" type="checkbox" :id="['enabled-' + type.id]" :checked="type.enabled == 1" disabled />
+                  <label class="form-check-label" :for="['enabled-' + type.id]" />
                 </div>
               </td>
               <td>{{ new Date(type.created_at).toLocaleString() }}</td>

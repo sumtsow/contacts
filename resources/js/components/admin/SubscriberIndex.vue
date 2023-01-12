@@ -17,16 +17,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="subscriber of subscribers">
+          <tr v-for="subscriber of subscribers" class="position-relative" :class="{ 'text-muted': !subscriber.enabled }" :id="'group-' + subscriber.id">
               <td>{{ subscriber.id }}</td>
               <td>
-                <router-link :to="{name: 'edit-subscriber', params: {id: subscriber.id}}">{{ subscriber.lastname }} {{ subscriber.firstname }}</router-link>
+                <router-link :to="{name: 'edit-subscriber', params: {id: subscriber.id}}" class="stretched-link text-dark">{{ subscriber.lastname }} {{ subscriber.firstname }}</router-link>
               </td>
               <td>{{ subscriber.group_id }}</td>
               <td>
                 <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" v-bind:id="['enabled-' + subscriber.id]" v-bind:checked="subscriber.enabled == 1" disabled />
-                  <label class="form-check-label" v-bind:for="['enabled-' + subscriber.id]" />
+                  <input class="form-check-input" type="checkbox" :id="['enabled-' + subscriber.id]" :checked="subscriber.enabled == 1" disabled />
+                  <label class="form-check-label" :for="['enabled-' + subscriber.id]" />
                 </div>
               </td>
               <td>{{ new Date(subscriber.created_at).toLocaleString() }}</td>

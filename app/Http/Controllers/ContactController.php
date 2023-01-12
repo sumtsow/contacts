@@ -14,7 +14,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-      return response()->json(Contact::all());
+      return response()->json(Contact::where('user_id', Auth::id())->with('type')->get());
     }
 
     /**
