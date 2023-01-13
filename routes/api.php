@@ -24,6 +24,8 @@ Route::get('/contacts/{uid?}', [ContactController::class, 'index'])->where('uid'
 
 Route::get('/groups/{all?}', [GroupController::class, 'index'])->where('all', '[0, 1]*');
 
+Route::get('/group/{id}', [GroupController::class, 'show'])->where('id', '[0-9]+');
+
 Route::get('/subscribers', [SubscriberController::class, 'index']);
 
 Route::get('/types', [TypeController::class, 'index']);

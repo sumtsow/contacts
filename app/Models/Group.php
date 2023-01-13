@@ -7,21 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
-    use HasFactory;
-    protected $table = 'group';
-    protected $with = ['children'];
+	use HasFactory;
+	protected $table = 'group';
+	protected $with = ['children'];
     
-    public function subcriber()
+	public function subscriber()
 	{
-      return $this->hasMany(Subcriber::class);
+      return $this->hasMany(Subscriber::class);
 	}
 
-    public function parent()
+	public function parent()
 	{
       return $this->belongsTo(self::class, 'parent_id');
 	}
 
-    public function children()
+	public function children()
 	{
       return $this->hasMany(self::class, 'parent_id');
 	}

@@ -20,6 +20,17 @@ class GroupController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(int $id)
+    {
+			return response()->json(Group::where('id', $id)->with('subscriber', 'parent', 'children')->get());
+    }
+
+    /**
      * Update existing or store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreGroupRequest  $request
