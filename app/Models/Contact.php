@@ -9,6 +9,7 @@ class Contact extends Model
 {
     use HasFactory;
     protected $table = 'contact';
+		protected $with = ['type'];
 
     public function type()
 	{

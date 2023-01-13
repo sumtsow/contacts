@@ -33,7 +33,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="groupEditModallLabel">Редагувати групу</h1>
+          <h1 class="modal-title fs-5" id="groupEditModalLabel">Редагувати групу</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
         </div>
         <div class="modal-body">
@@ -87,7 +87,7 @@
 				emptyGroup: {
 					id: null,
 					title: '',
-					enabled: 1,
+					enabled: true,
 					parent_id: null
 				},
 				currentGroup: {},

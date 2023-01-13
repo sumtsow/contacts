@@ -41,7 +41,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="typeEditModallLabel">Редагувати тип</h1>
+          <h1 class="modal-title fs-5" id="typeEditModalLabel">Редагувати тип</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
         </div>
         <div class="modal-body">
@@ -79,7 +79,7 @@
 				emptyType: {
 					id: null,
 					title: '',
-					enabled: 1,
+					enabled: true,
 				},
 				currentType: {},
 				prevState: {},

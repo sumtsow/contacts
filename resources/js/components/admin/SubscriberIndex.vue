@@ -5,7 +5,7 @@
   </div>
 	<div class="row justify-content-end">
     <div class="col-auto">
-      <button type="button" class="btn btn-primary" @click="clearType" data-bs-toggle="modal" data-bs-target="#subscriberEditModal">Додати</button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subscriberEditModal" @click="clearSubscriber">Додати</button>
     </div>
   </div>
   <div class="row">
@@ -16,16 +16,20 @@
             <th>ID&nbsp;&uarr;</th>
             <th>Прізвище та ім'я</th>
 						<th>Група</th>
+						<th>Контакти</th>
             <th>Статус</th>
             <th>Створено</th>
             <th>Оновлено</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="subscriber of subscribers" class="position-relative" :class="{ 'text-muted': !subscriber.enabled }" data-bs-toggle="modal" data-bs-target="#subscriberEditModal" @click.prevent="selectSubscriber(subscriber)" style="cursor: pointer">
+          <tr v-for="subscriber of subscribers" class="position-relative" :class="{ 'text-muted': !subscriber.enabled }" data-bs-toggle="modal" data-bs-target="#subscriberEditModal" @click="selectSubscriber(subscriber)" style="cursor: pointer">
               <td>{{ subscriber.id }}</td>
               <td>{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
 							<td>{{ subscriber.group.title }}</td>
+							<td>
+								<div v-for="contact of subscriber.contact" :class="{ 'text-muted': !contact.enabled }">{{ contact.value }}</div>
+							</td>
               <td>
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" :id="['enabled-' + subscriber.id]" :checked="subscriber.enabled == 1" disabled />
@@ -39,11 +43,11 @@
       </table>
     </div>
   </div>
-	<div class="modal fade" id="subscriberEditModal" tabindex="-1" aria-labelledby="subscriberEditModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog">
+	<div class="modal fade" id="subscriberEditModal" aria-hidden="true" aria-labelledby="subscriberEditModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="subscriberEditModallLabel">Редагувати контакт</h1>
+          <h1 class="modal-title fs-5" id="subscriberEditModalLabel">Редагувати контакт</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
         </div>
         <div class="modal-body">
@@ -72,11 +76,60 @@
 								</template>
               </select>
             </div>
-        </form>
+						<template v-for="contact in currentSubscriber.contact">
+						<div class="row border border-secondary rounded mb-3 mx-1 py-3" :class="{ 'text-muted': !contact.enabled }" style="cursor: pointer" data-bs-target="#contactEditModal" data-bs-toggle="modal" type="button" data-bs-dismiss="modal" @click="selectContact(contact)">
+							<div class="col-auto">{{ contact.type.title }}:</div>
+							<div class="col">{{ contact.value }}</div>
+						</div>
+						</template>
+					</form>
+					<div class="row justify-content-end">
+						<div class="col-auto" data-bs-dismiss="modal">
+							<button class="btn btn-primary" data-bs-target="#contactEditModal" data-bs-toggle="modal" @click="clearContact">Додати контакт</button>
+						</div>
+					</div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="resetSubscriber">Скасувати</button>
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="saveSubscriber(subscriber)">Зберегти</button>
+          <button class="btn btn-secondary" data-bs-dismiss="modal" @click="resetSubscriber">Скасувати</button>
+          <button class="btn btn-primary" data-bs-dismiss="modal" @click="saveSubscriber(subscriber)">Зберегти</button>
+        </div>
+      </div>
+    </div>
+  </div>
+	<div class="modal fade" id="contactEditModal" aria-hidden="true" aria-labelledby="contactEditModalLabel" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="contactEditModalLabel">Редагувати контакт</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="saveContact">
+            <div class="mb-3">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentContact.enabled"/>
+                <label class="form-check-label" for="enabled-selected" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="contact-value" class="col-form-label">Контакт</label>
+              <input type="text" class="form-control" id="contact-value" v-model="currentContact.value">
+            </div>
+						<div id="form-col-2" class="row input-group mb-3">
+              <label class="col-form-label col-4 text-right" label-for="type-select">Тип</label>
+              <select v-model="currentContact.type_id" class="col form-select form-select-sm" id="type-select">
+								<template v-for="item in types">
+                <option :value="item.id">
+                  {{ item.title }}
+                </option>
+								</template>
+              </select>
+            </div>
+					</form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#subscriberEditModal" data-bs-toggle="modal" @click="resetContact">Скасувати</button>
+          <button class="btn btn-primary" data-bs-dismiss="modal" data-bs-target="#subscriberEditModal" data-bs-toggle="modal" @click="saveContact">Зберегти</button>
         </div>
       </div>
     </div>
@@ -92,24 +145,42 @@
       return {
         breadcrumbs: [{ href: '/dashboard', text: 'Домашня' },{ href: false, text: 'Контакти' }],
         subscribers: {},
-				emptyІubscriber: {
+				emptyContact: {
+					id: null,
+					value: '',
+					subscriber_id: null,
+					type_id: null,
+					enabled: true,
+				},
+				emptySubscriber: {
 					id: null,
 					firstname: '',
 					lastname: '',
 					group_id: 1,
-					enabled: 1,
+					enabled: true,
 				},
 				currentSubscriber: {},
+				currentContact: {},
 				prevState: {},
+				prevContactState: {},
 				groups: {},
+				types: {},
       };
     },
     mounted() {
 			this.clearSubscriber();
+			this.clearContact();
       this.getSubscribers();
 			this.getGroups();
+			this.getTypes();
     },
     methods: {
+			addContact() {
+				console.log('Add');
+			},
+			clearContact() {
+        this.currentContact = Object.assign({}, this.emptyContact);
+      },
 			clearSubscriber() {
         this.currentSubscriber = Object.assign({}, this.emptySubscriber);
       },
@@ -133,17 +204,61 @@
             alert("Could not load subscribers!");
           });
       },
+			getTypes() {
+        var app = this;
+        axios.get('/api/types')
+          .then(function (resp) {
+            app.types = resp.data;
+          })
+          .catch(function () {
+            alert("Could not load types!");
+          });
+      },
+			pushContactState() {
+				this.prevContactState.enabled = this.currentContact.enabled;
+				this.prevContactState.value = this.currentContact.value;
+				this.prevContactState.subscriber_id = this.currentContact.subscriber_id;
+				this.prevContactState.type_id = this.currentContact.type_id;
+			},
 			pushState() {
 				this.prevState.enabled = this.currentSubscriber.enabled;
 				this.prevState.firstname = this.currentSubscriber.firstname;
 				this.prevState.lastname = this.currentSubscriber.lastname;
 				this.prevState.group_id = this.currentSubscriber.group_id;
 			},
+			resetContact() {
+				if (!this.currentContact.id) return;
+        this.currentContact.enabled = this.prevContactState.enabled;
+        this.currentContact.value = this.prevContactState.value;
+				this.currentContact.subscriber_id = this.prevContactState.subscriber_id;
+				this.currentContact.type_id = this.prevContactState.type_id;
+      },
       resetSubscriber() {
+				if (!this.currentSubscriber.id) return;
         this.currentSubscriber.enabled = this.prevState.enabled;
         this.currentSubscriber.firstname = this.prevState.firstname;
 				this.currentSubscriber.lastname = this.prevState.lastname;
 				this.currentSubscriber.group_id = this.prevState.group_id;
+      },
+			saveContact() {
+        if (!this.currentContact) return;
+				var id = this.currentContact.id ? parseInt(this.currentContact.id, 10) : 0;
+				if (isNaN(id)) return;
+        this.currentContact._token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+				if (!this.currentContact.subscriber_id) this.currentContact.subscriber_id = this.currentSubscriber.id;
+        var app = this;
+        axios.post('/contact/' + id, this.currentContact)
+          .then(function (resp) {
+						app.getSubscribers();
+						app.currentContact.type = app.types.find(elem => elem.id == app.currentContact.type_id);
+						if (!id) app.currentSubscriber.contact.push(app.currentContact);
+          })
+          .catch(function (resp) {
+            if (resp.response) {
+              var message = resp.response.data.message;
+              var errors = resp.response.data.errors;
+            }
+          });
       },
       saveSubscriber() {
         if (!this.currentSubscriber) return;
@@ -152,7 +267,7 @@
         this.currentSubscriber._token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         var app = this;
         axios.post('/subscriber/' + id, this.currentSubscriber)
-          .then(function (resp) {
+          .then(function () {
 						app.getSubscribers();
           })
           .catch(function (resp) {
@@ -162,10 +277,16 @@
             }
           });
       },
+			selectContact(contact) {
+				if (!contact) return;
+				this.currentContact = contact;
+				if (this.currentContact.id) this.pushContactState();
+				this.currentContact.enabled = !!this.currentContact.enabled;
+      },
       selectSubscriber(subscr) {
 				if (!subscr) return;
 				this.currentSubscriber = subscr;
-				this.pushState();
+				if (this.currentSubscriber.id) this.pushState();
 				this.currentSubscriber.enabled = !!this.currentSubscriber.enabled;
       },
     }

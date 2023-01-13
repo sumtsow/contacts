@@ -25,6 +25,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+Route::post('/contact/{id}', [ContactController::class, 'store'])->where('id', '[0-9]+');
+
 Route::post('/group/{id}', [GroupController::class, 'store'])->where('id', '[0-9]+');
 
 Route::post('/subscriber/{id}', [SubscriberController::class, 'store'])->where('id', '[0-9]+');
