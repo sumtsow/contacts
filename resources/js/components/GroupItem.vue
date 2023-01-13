@@ -3,16 +3,18 @@
 		<th colspan="2" class="bg-secondary text-light">{{ group.title }}</th>
   </tr>
 	<template v-for="subscriber of groupInfo.subscriber">
-	<tr :class="{ 'text-muted': (subscriber && !subscriber.enabled) }">
+	<tr v-if="subscriber.enabled">
 		<td class="w-auto">{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
 		<td>
-			<p v-for="contact of subscriber.contact" :class="{ 'text-muted': (contact && !contact.enabled) }">
-				{{ contact.value }}
+			<template v-for="contact of subscriber.contact">
+			<p v-if="contact.enabled">
+				{{ contact.type.title }}: {{ contact.value }}
 			</p>
+			</template>
 		</td>
 	</tr>
 	</template>
-	<template v-for="child of group.children" v-if="group.enabled > 0">
+	<template v-for="child of group.children" v-if="group.enabled">
 		<group-item :group="child"></group-item>
 	</template>
 </template>

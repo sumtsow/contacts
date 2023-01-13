@@ -12,7 +12,7 @@
 				</thead>
 				<tbody>
 					<template v-for="group of groups">
-						<group-item :group="group" v-if="group.enabled > 0"></group-item>
+						<group-item :group="group" v-if="group.enabled"></group-item>
 					</template>
 				</tbody>
 			</table>
