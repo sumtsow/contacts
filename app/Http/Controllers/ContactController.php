@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contact;
+use App\Models\Type;
 use App\Http\Requests\StoreContactRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,7 +35,9 @@ class ContactController extends Controller
       }
 			$contact->subscriber_id = $request->subscriber_id;
       $contact->type_id = $request->type_id;
-			$contact->value = $request->value;
+			$type = Type::findOrFail($request->type_id);
+			$request->value = trim($request->value);
+			$contact->value = $type->input_type === 'tel' ? preg_replace('/[^\+\d+]/', '', $request->value) : $request->value;
       $contact->enabled = intval($request->enabled);
 			$contact->save();
       return response()->json([ $contact ]);

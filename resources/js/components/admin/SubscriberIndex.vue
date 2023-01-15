@@ -264,7 +264,13 @@
           .then(function (resp) {
 						app.getSubscribers();
 						app.currentContact.type = app.types.find(elem => elem.id == app.currentContact.type_id);
-						if (!id) app.currentSubscriber.contact.push(app.currentContact);
+						if (!id) {
+							app.currentSubscriber.contact.push(app.currentContact);
+						} else {
+							app.currentContact = resp.data[0];
+							var index = app.currentSubscriber.contact.findIndex(elem => elem.id == app.currentContact.id);
+							app.currentSubscriber.contact[index] = app.currentContact;
+						}
           })
           .catch(function (resp) {
             if (resp.response) {
