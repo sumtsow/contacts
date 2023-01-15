@@ -29,3 +29,5 @@ Route::get('/group/{id}', [GroupController::class, 'show'])->where('id', '[0-9]+
 Route::get('/subscribers', [SubscriberController::class, 'index']);
 
 Route::get('/types', [TypeController::class, 'index']);
+
+Route::get('/intypes', [TypeController::class, 'show']);

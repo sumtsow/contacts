@@ -15,6 +15,7 @@
           <tr>
             <th>ID&nbsp;&uarr;</th>
             <th>Титул</th>
+						<th>Формат</th>
             <th>Статус</th>
             <th>Створено</th>
             <th>Оновлено</th>
@@ -24,6 +25,7 @@
           <tr v-for="type of types" class="position-relative" :class="{ 'text-muted': !type.enabled }" data-bs-toggle="modal" data-bs-target="#typeEditModal" @click.prevent="selectType(type)" style="cursor: pointer">
               <td>{{ type.id }}</td>
               <td>{{ type.title }}</td>
+							<td>{{ type.input_type }}</td>
               <td>
                 <div class="form-check form-switch">
                   <input class="form-check-input" type="checkbox" :id="['enabled-' + type.id]" :checked="type.enabled == 1" disabled />
@@ -48,13 +50,22 @@
           <form @submit.prevent="saveType">
             <div class="mb-3">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentType.enabled"/>
+                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentType.enabled" required="required"/>
                 <label class="form-check-label" for="enabled-selected" />
               </div>
             </div>
             <div class="mb-3">
               <label for="type-title" class="col-form-label">Назва</label>
-              <input type="text" class="form-control" id="type-title" v-model="currentType.title">
+              <input type="text" class="form-control" id="type-title" v-model="currentType.title" required="required"/>
+            </div>
+						<div class="mb-3">
+							<select v-model="currentType.input_type" class="col form-select form-select-sm" id="group-select" required="required">
+								<template v-for="inputType in inputTypes">
+                <option :value="inputType">
+                  {{ inputType }}
+                </option>
+								</template>
+              </select>
             </div>
         </form>
         </div>
@@ -75,23 +86,36 @@
     data() {
       return {
         breadcrumbs: [{ href: '/dashboard', text: 'Домашня' },{ href: false, text: 'Типи' }],
-        types: {},
+        types: [],
 				emptyType: {
 					id: null,
 					title: '',
+					input_type: 'text',
 					enabled: true,
 				},
 				currentType: {},
 				prevState: {},
+				inputTypes: []
       };
     },
     mounted() {
 			this.clearType();
       this.getTypes();
+			this.getInputTypes();
     },
     methods: {
 			clearType() {
         this.currentType = Object.assign({}, this.emptyType);
+      },
+			getInputTypes() {
+        var app = this;
+        axios.get('/api/intypes')
+          .then(function (resp) {
+            app.inputTypes = resp.data;
+          })
+          .catch(function () {
+            alert("Could not load input types!");
+          });
       },
       getTypes() {
         var app = this;

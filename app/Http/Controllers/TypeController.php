@@ -18,6 +18,16 @@ class TypeController extends Controller
     }
 
     /**
+     * Return enum options for input_type field.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show()
+    {
+        return response()->json(Type::getInputTypes());
+    }
+
+    /**
      * Update existing or store a newly created resource in storage.
      *
      * @param  \App\Http\Requests\StoreTypeRequest  $request
@@ -32,6 +42,7 @@ class TypeController extends Controller
       }
       $type->title = $request->title;
       $type->enabled = intval($request->enabled);
+			$type->input_type = $request->input_type;
 			$type->save();
       return response()->json([ $type ]);
     }

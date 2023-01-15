@@ -40,17 +40,17 @@
           <form @submit.prevent="saveGroup">
             <div class="mb-3">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentGroup.enabled"/>
+                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentGroup.enabled" required="required"/>
                 <label class="form-check-label" for="enabled-selected" />
               </div>
             </div>
             <div class="mb-3">
               <label for="group-title" class="col-form-label">Назва</label>
-              <input type="text" class="form-control" id="group-title" v-model="currentGroup.title">
+              <input type="text" class="form-control" id="group-title" v-model="currentGroup.title" required="required"/>
             </div>
             <div id="form-col-2" class="row input-group mb-3">
               <label class="col-form-label col-4 text-right" label-for="group-select">Група</label>
-              <select v-model="currentGroup.parent_id" class="col form-select form-select-sm" id="group-select">
+              <select v-model="currentGroup.parent_id" class="col form-select form-select-sm" id="group-select" required="required">
 								<template v-for="item in groupsSelectOptions">
                 <option v-if="!item.id || item.id !== currentGroup.id" :value="item.id">
                   {{ item.title }}

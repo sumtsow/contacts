@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use App\Models\Type;
 
 class StoreTypeRequest extends FormRequest
 {
@@ -23,8 +25,10 @@ class StoreTypeRequest extends FormRequest
      */
     public function rules()
     {
+			$inputTypes = Type::getInputTypes();
       return [
         'title' => 'string|max:255',
+				'input_type' => Rule::in($inputTypes),
         'enabled' => 'filled',
       ];
     }

@@ -54,7 +54,7 @@
           <form @submit.prevent="saveSubscriber">
             <div class="mb-3">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentSubscriber.enabled"/>
+                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentSubscriber.enabled" required="required"/>
                 <label class="form-check-label" for="enabled-selected" />
               </div>
             </div>
@@ -64,11 +64,11 @@
             </div>
 						<div class="mb-3">
               <label for="subscriber-lastname" class="col-form-label">Ім'я</label>
-              <input type="text" class="form-control" id="subscriber-lastname" v-model="currentSubscriber.firstname">
+              <input type="text" class="form-control" id="subscriber-lastname" v-model="currentSubscriber.firstname" required="required">
             </div>
 						<div id="form-col-2" class="row input-group mb-3">
               <label class="col-form-label col-4 text-right" label-for="group-select">Група</label>
-              <select v-model="currentSubscriber.group_id" class="col form-select form-select-sm" id="group-select">
+              <select v-model="currentSubscriber.group_id" class="col form-select form-select-sm" id="group-select" required="required">
 								<template v-for="item in groups">
                 <option :value="item.id">
                   {{ item.title }}
@@ -107,19 +107,19 @@
           <form @submit.prevent="saveContact">
             <div class="mb-3">
               <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentContact.enabled"/>
+                <input class="form-check-input" type="checkbox" id="enabled-selected" v-model="currentContact.enabled" required="required"/>
                 <label class="form-check-label" for="enabled-selected" />
               </div>
             </div>
             <div class="mb-3">
               <label for="contact-value" class="col-form-label">Контакт</label>
-              <input type="text" class="form-control" id="contact-value" v-model="currentContact.value">
+              <input :type="(currentContact ? currentContact.type.input_type : 'text')" class="form-control" id="contact-value" v-model="currentContact.value" required="required">
             </div>
 						<div id="form-col-2" class="row input-group mb-3">
               <label class="col-form-label col-4 text-right" label-for="type-select">Тип</label>
-              <select v-model="currentContact.type_id" class="col form-select form-select-sm" id="type-select">
+              <select v-model="currentContact.type_id" class="col form-select form-select-sm" id="type-select" required="required" @change="selectTypeId">
 								<template v-for="item in types">
-                <option :value="item.id">
+                <option v-if="item.enabled" :value="item.id">
                   {{ item.title }}
                 </option>
 								</template>
@@ -151,6 +151,7 @@
 					subscriber_id: null,
 					type_id: null,
 					enabled: true,
+					type: {}
 				},
 				emptySubscriber: {
 					id: null,
@@ -160,11 +161,12 @@
 					enabled: true,
 				},
 				currentSubscriber: {},
-				currentContact: {},
+				currentContact: {type: {}},
 				prevState: {},
 				prevContactState: {},
 				groups: {},
 				types: {},
+				inputTypes: [],
       };
     },
     mounted() {
@@ -173,6 +175,7 @@
       this.getSubscribers();
 			this.getGroups();
 			this.getTypes();
+			this.getInputTypes();
     },
     methods: {
 			addContact() {
@@ -192,6 +195,16 @@
           })
           .catch(function () {
             alert("Could not load groups!");
+          });
+      },
+			getInputTypes() {
+        var app = this;
+        axios.get('/api/intypes')
+          .then(function (resp) {
+            app.inputTypes = resp.data;
+          })
+          .catch(function () {
+            alert("Could not load input types!");
           });
       },
       getSubscribers() {
@@ -289,6 +302,9 @@
 				if (this.currentSubscriber.id) this.pushState();
 				this.currentSubscriber.enabled = !!this.currentSubscriber.enabled;
       },
-    }
+			selectTypeId() {
+				this.currentContact.type.input_type = this.types.find(elem => elem.id == this.currentContact.type_id).input_type;
+			},
+    },
   };
 </script>
