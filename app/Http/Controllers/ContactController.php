@@ -37,7 +37,13 @@ class ContactController extends Controller
       $contact->type_id = $request->type_id;
 			$type = Type::findOrFail($request->type_id);
 			$request->value = trim($request->value);
-			$contact->value = $type->input_type === 'tel' ? preg_replace('/[^\+\d+]/', '', $request->value) : $request->value;
+			$contact->value =  $request->value;
+			if ($type->input_type === 'tel') {
+				$contact->value =  preg_replace('#[^\+\d]#', '', $contact->value);
+				if (!$contact->value) {
+					return response()->json([ 'message' => 'Помилка даних!', 'errors' => ['value' => 'У полі Контакт допускаються лише символ "+" та цифри, наприклад, +380441112233'] ]);
+				}
+			}
       $contact->enabled = intval($request->enabled);
 			$contact->save();
       return response()->json([ $contact ]);

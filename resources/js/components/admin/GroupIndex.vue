@@ -2,6 +2,10 @@
   <breadcrumbs :breadcrumbs="breadcrumbs"></breadcrumbs>
   <div>
     <h1>Редагувати групи</h1>
+		<div v-if="alert" class="alert" :class="alertClass">
+			<h5>{{ alert.message }}</h5>
+			<p v-for="line of alert.errors">{{ line }}</p>
+		</div>
   </div>
   <div class="row justify-content-end">
     <div class="col-auto">
@@ -76,6 +80,11 @@
       Breadcrumbs,
       GroupTableRow
     },
+		computed: {
+			alertClass() {
+				return (this.alert && this.alert.success) ? 'alert-success' : 'alert-danger';
+			},
+		},
     data() {
       return {
         breadcrumbs: [
@@ -92,6 +101,7 @@
 				},
 				currentGroup: {},
 				prevState: {},
+				alert: null,
       };
     },
     mounted() {
@@ -116,7 +126,7 @@
 						}
           })
           .catch(function () {
-            alert("Could not load groups!");
+            app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати групи!'] };
           });
       },
 			pushState() {
@@ -126,6 +136,7 @@
       resetGroup() {
         this.currentGroup.enabled = this.prevState.enabled;
         this.currentGroup.title = this.prevState.title;
+				this.alert = null;
       },
       saveGroup() {
         if (!this.currentGroup) return;
@@ -135,12 +146,18 @@
         var app = this;
         axios.post('/group/' + id, this.currentGroup)
           .then(function (resp) {
-            app.getGroups();
+						if (resp.data.errors) {
+							app.resetGroup();
+							app.alert = resp.data;
+						} else {
+							app.getGroups();
+							app.alert = { message: 'Збережено!', success: true };
+						}
           })
           .catch(function (resp) {
             if (resp.response) {
-              var message = resp.response.data.message;
-              var errors = resp.response.data.errors;
+							app.resetGroup();
+              app.alert = resp.response.data;
             }
           });
       },
@@ -149,6 +166,7 @@
 				this.currentGroup = grp;
 				this.pushState();
 				this.currentGroup.enabled = !!this.currentGroup.enabled;
+				this.alert = null;
       },
     }
   };

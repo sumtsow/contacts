@@ -2,6 +2,10 @@
   <breadcrumbs :breadcrumbs="breadcrumbs"></breadcrumbs>
   <div>
     <h1>Редагувати типи</h1>
+		<div v-if="alert" class="alert" :class="alertClass">
+			<h5>{{ alert.message }}</h5>
+			<p v-for="line of alert.errors">{{ line }}</p>
+		</div>
   </div>
 	<div class="row justify-content-end">
     <div class="col-auto">
@@ -83,6 +87,11 @@
     components: {
       Breadcrumbs,
     },
+		computed: {
+			alertClass() {
+				return (this.alert && this.alert.success) ? 'alert-success' : 'alert-danger';
+			},
+		},
     data() {
       return {
         breadcrumbs: [{ href: '/dashboard', text: 'Домашня' },{ href: false, text: 'Типи' }],
@@ -95,7 +104,8 @@
 				},
 				currentType: {},
 				prevState: {},
-				inputTypes: []
+				inputTypes: [],
+				alert: null,
       };
     },
     mounted() {
@@ -114,7 +124,7 @@
             app.inputTypes = resp.data;
           })
           .catch(function () {
-            alert("Could not load input types!");
+						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати типи!'] };
           });
       },
       getTypes() {
@@ -124,7 +134,7 @@
             app.types = resp.data;
           })
           .catch(function () {
-            alert("Could not load types!");
+            app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати типи поля введення!'] };
           });
       },
 			pushState() {
@@ -134,6 +144,7 @@
       resetType() {
         this.currentType.enabled = this.prevState.enabled;
         this.currentType.title = this.prevState.title;
+				this.alert = null;
       },
       saveType() {
         if (!this.currentType) return;
@@ -143,13 +154,19 @@
         var app = this;
         axios.post('/type/' + id, this.currentType)
           .then(function (resp) {
-						if (app.currentType.id) app.currentType = resp.data;
-							else app.getTypes();
+						if (resp.data.errors) {
+							app.resetType();
+							app.alert = resp.data;
+						} else {
+							if (app.currentType.id) app.currentType = resp.data;
+								else app.getTypes();
+							app.alert = { message: 'Збережено!', success: true };
+						}
           })
           .catch(function (resp) {
             if (resp.response) {
-              var message = resp.response.data.message;
-              var errors = resp.response.data.errors;
+							app.resetType();
+              app.alert = resp.response.data;
             }
           });
       },
@@ -158,6 +175,7 @@
 				this.currentType = tp;
 				this.pushState();
 				this.currentType.enabled = !!this.currentType.enabled;
+				this.alert = null;
       },
     }
   };

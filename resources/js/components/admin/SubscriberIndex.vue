@@ -2,6 +2,10 @@
   <breadcrumbs :breadcrumbs="breadcrumbs"></breadcrumbs>
   <div>
     <h1>Редагувати контакти</h1>
+		<div v-if="!modalIsShown && alert" class="alert" :class="alertClass">
+			<h5>{{ alert.message }}</h5>
+			<p v-for="line of alert.errors">{{ line }}</p>
+		</div>
   </div>
 	<div class="row justify-content-end">
     <div class="col-auto">
@@ -51,6 +55,10 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрити"></button>
         </div>
         <div class="modal-body">
+					<div v-if="modalIsShown && alert" class="alert" :class="alertClass">
+						<h5>{{ alert.message }}</h5>
+						<p v-for="line of alert.errors">{{ line }}</p>
+					</div>
           <form @submit.prevent="saveSubscriber">
             <div class="mb-3">
               <div class="form-check form-switch">
@@ -141,6 +149,11 @@
     components: {
       Breadcrumbs,
     },
+		computed: {
+			alertClass() {
+				return (this.alert && this.alert.success) ? 'alert-success' : 'alert-danger';
+			},
+		},
     data() {
       return {
         breadcrumbs: [{ href: '/dashboard', text: 'Домашня' },{ href: false, text: 'Контакти' }],
@@ -167,6 +180,9 @@
 				groups: {},
 				types: {},
 				inputTypes: [],
+				alert: null,
+				modalIsShown: false,
+				subscriberModal: {},
       };
     },
     mounted() {
@@ -176,6 +192,7 @@
 			this.getGroups();
 			this.getTypes();
 			this.getInputTypes();
+			this.setModalHandlers();
     },
     methods: {
 			addContact() {
@@ -194,7 +211,7 @@
 						app.groups = resp.data;
           })
           .catch(function () {
-            alert("Could not load groups!");
+            app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати групи!'] };
           });
       },
 			getInputTypes() {
@@ -204,7 +221,7 @@
             app.inputTypes = resp.data;
           })
           .catch(function () {
-            alert("Could not load input types!");
+						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати типи поля введення!'] };
           });
       },
       getSubscribers() {
@@ -214,7 +231,7 @@
             app.subscribers = resp.data;
           })
           .catch(function () {
-            alert("Could not load subscribers!");
+						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати контакти!'] };
           });
       },
 			getTypes() {
@@ -224,7 +241,7 @@
             app.types = resp.data;
           })
           .catch(function () {
-            alert("Could not load types!");
+						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати типи контакту!'] };
           });
       },
 			pushContactState() {
@@ -245,6 +262,7 @@
         this.currentContact.value = this.prevContactState.value;
 				this.currentContact.subscriber_id = this.prevContactState.subscriber_id;
 				this.currentContact.type_id = this.prevContactState.type_id;
+				this.alert = null;
       },
       resetSubscriber() {
 				if (!this.currentSubscriber.id) return;
@@ -252,6 +270,7 @@
         this.currentSubscriber.firstname = this.prevState.firstname;
 				this.currentSubscriber.lastname = this.prevState.lastname;
 				this.currentSubscriber.group_id = this.prevState.group_id;
+				this.alert = null;
       },
 			saveContact() {
         if (!this.currentContact) return;
@@ -262,20 +281,26 @@
         var app = this;
         axios.post('/contact/' + id, this.currentContact)
           .then(function (resp) {
-						app.getSubscribers();
-						app.currentContact.type = app.types.find(elem => elem.id == app.currentContact.type_id);
-						if (!id) {
-							app.currentSubscriber.contact.push(app.currentContact);
+						if (resp.data.errors) {
+							app.resetContact();
+							app.alert = resp.data;
 						} else {
-							app.currentContact = resp.data[0];
-							var index = app.currentSubscriber.contact.findIndex(elem => elem.id == app.currentContact.id);
-							app.currentSubscriber.contact[index] = app.currentContact;
+							app.getSubscribers();
+							app.currentContact.type = app.types.find(elem => elem.id == app.currentContact.type_id);
+							if (!id) {
+								app.currentSubscriber.contact.push(app.currentContact);
+							} else {
+								app.currentContact = resp.data[0];
+								var index = app.currentSubscriber.contact.findIndex(elem => elem.id == app.currentContact.id);
+								app.currentSubscriber.contact[index] = app.currentContact;
+							}
+							app.alert = { message: 'Збережено!', success: true };
 						}
           })
           .catch(function (resp) {
             if (resp.response) {
-              var message = resp.response.data.message;
-              var errors = resp.response.data.errors;
+              app.resetContact();
+							app.alert = resp.response.data;
             }
           });
       },
@@ -287,12 +312,18 @@
         var app = this;
         axios.post('/subscriber/' + id, this.currentSubscriber)
           .then(function () {
-						app.getSubscribers();
+						if (resp.data.errors) {
+							app.resetSubscriber();
+							app.alert = resp.data;
+						} else {
+							app.getSubscribers();
+							app.alert = { message: 'Збережено!', success: true };
+						}
           })
           .catch(function (resp) {
             if (resp.response) {
-              var message = resp.response.data.message;
-              var errors = resp.response.data.errors;
+              app.resetSubscriber();
+							app.alert = resp.response.data;
             }
           });
       },
@@ -301,15 +332,27 @@
 				this.currentContact = contact;
 				if (this.currentContact.id) this.pushContactState();
 				this.currentContact.enabled = !!this.currentContact.enabled;
+				this.alert = null;
       },
       selectSubscriber(subscr) {
 				if (!subscr) return;
 				this.currentSubscriber = subscr;
 				if (this.currentSubscriber.id) this.pushState();
 				this.currentSubscriber.enabled = !!this.currentSubscriber.enabled;
+				this.alert = null;
       },
 			selectTypeId() {
 				this.currentContact.type.input_type = this.types.find(elem => elem.id == this.currentContact.type_id).input_type;
+			},
+			setModalHandlers() {
+				var app = this;
+				this.subscriberModal = document.getElementById('subscriberEditModal');
+				this.subscriberModal.addEventListener('show.bs.modal', () => {
+					app.modalIsShown = true;
+				});
+				this.subscriberModal.addEventListener('hide.bs.modal', () => {
+					app.modalIsShown = false;
+				});
 			},
     },
   };
