@@ -2,11 +2,11 @@
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Головна</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dropdownMenu" aria-controls="dropdownMenu" aria-expanded="true" aria-label="Переключити">
-        <span class="navbar-toggler-icon"></span>
-      </button>
       <!-- Authentication Links -->
       <template v-if="user">
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#dropdownMenu" aria-controls="dropdownMenu" aria-expanded="true" aria-label="Переключити">
+        <span class="navbar-toggler-icon"></span>
+      </button>
       <div id="dropdownMenu" class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item dropdown">

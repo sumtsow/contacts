@@ -12,11 +12,9 @@ class GroupController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($all = null)
+    public function index()
     {
-			$query = Group::orderBy('title');
-			if (!$all) $query->where('parent_id', null);
-      return response()->json($query->get());
+      return response()->json(Group::orderBy('title')->get());
     }
 
     /**

@@ -1,22 +1,28 @@
 <template>
-  <tr>
-		<th colspan="2" class="bg-secondary text-light">{{ group.title }}</th>
-  </tr>
-	<template v-for="subscriber of groupInfo.subscriber">
-	<tr v-if="subscriber.enabled">
-		<td class="w-auto">{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
-		<td>
-			<template v-for="contact of subscriber.contact">
-			<p v-if="contact.enabled">
-				{{ contact.type.title }}: {{ contact.value }}
-			</p>
-			</template>
-		</td>
-	</tr>
-	</template>
-	<template v-for="child of group.children" v-if="group.enabled">
-		<group-item :group="child"></group-item>
-	</template>
+  <li class="list-group-item list-group-item-primary" :class="'group-' + group.id">
+		<div class="row">
+			<div class="col">
+			{{ group.title }}
+			</div>
+		</div>
+		<ul class="list-group list-group-flush" v-for="child of group.children">
+			<group-item v-if="!group.parent_id && group.enabled" :group="child"></group-item>
+		</ul>
+		<ul class="list-group list-group-flush" v-for="subscriber of groupInfo.subscriber">
+			<li class="list-group-item" v-if="subscriber.enabled">
+				<div class="row">
+					<div class="col">{{ subscriber.lastname }} {{ subscriber.firstname }}</div>
+					<div class="col">
+						<template v-for="contact of subscriber.contact">
+						<p v-if="contact.enabled">
+							{{ contact.type.title }}: {{ contact.value }}
+						</p>
+						</template>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</li>
 </template>
  
 <script>

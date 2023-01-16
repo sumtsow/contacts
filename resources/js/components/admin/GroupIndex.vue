@@ -27,7 +27,7 @@
         </thead>
         <tbody>
         <template v-for="group of groups">
-          <group-table-row :group="group" parent="null" :handler="selectGroup"></group-table-row>
+          <group-table-row v-if="!group.parent_id" :group="group" parent="null" :handler="selectGroup"></group-table-row>
         </template>
         </tbody>
       </table>
@@ -55,7 +55,7 @@
             <div id="form-col-2" class="row input-group mb-3">
               <label class="col-form-label col-4 text-right" label-for="group-select">Група</label>
               <select v-model="currentGroup.parent_id" class="col form-select form-select-sm" id="group-select" required="required">
-								<template v-for="item in groupsSelectOptions">
+								<template v-for="item in groupSelectOptions">
                 <option v-if="!item.id || item.id !== currentGroup.id" :value="item.id">
                   {{ item.title }}
                 </option>
@@ -92,7 +92,7 @@
           { href: false, text: 'Групи' },
         ],
         groups: {},
-        groupsSelectOptions: {},
+        groupSelectOptions: {},
 				emptyGroup: {
 					id: null,
 					title: '',
@@ -113,21 +113,21 @@
       clearGroup() {
         this.currentGroup = Object.assign({}, this.emptyGroup);
       },
-      getGroups(all) {
+      getGroups() {
 				var app = this;
-        axios.get('/api/groups' + (all ? ('/' + all) : ''))
+        axios.get('/api/groups')
           .then(function (resp) {
-						if (all) {
-							app.groupsSelectOptions = resp.data;
-							app.groupsSelectOptions.unshift(Object.assign({}, app.emptyGroup));
-							app.groupsSelectOptions[0].title = 'немає';
-						} else {
-							app.groups = resp.data;
-						}
+						app.groups = resp.data;
+						app.getGroupSelectOptions();
           })
           .catch(function () {
             app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати групи!'] };
           });
+      },
+			getGroupSelectOptions() {
+				this.groupSelectOptions = this.groups.slice();
+				this.groupSelectOptions.unshift(this.emptyGroup);
+				this.groupSelectOptions[0].title = 'немає';
       },
 			pushState() {
 				this.prevState.enabled = this.currentGroup.enabled;
