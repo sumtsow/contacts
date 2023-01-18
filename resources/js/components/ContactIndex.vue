@@ -5,22 +5,23 @@
 	<div class="row">
 		<div class="col">
 			<label for="group-select-box" class="form-label">Показати:</label>
-			<select v-model="selectedGroups" id="group-select-box" multiple class="form-select multiple mb-3">
+			<select v-model="selectedGroups" id="group-select-box" multiple class="form-select multiple mb-3" @change="filterGroups">
 				<template v-for="group of selectedGroupOptions">
-				<group-option v-if="!group.parent_id && group.enabled" :group="group"></group-option>
+				<group-option v-if="!group.parent_id && group.enabled" :group="group" :indent="''"></group-option>
 				</template>
 			</select>
 		</div>
 	</div>
 	<div class="container">
 		<div class="row">
-			<div v-for="header of tableHeaders" class="col">{{ header }}</div>
+			<div class="col">
+				<template v-for="group of groups">
+					<ul class="list-group list-group-flush" :class="{'d-none': group.hidden}">
+					<group-item v-if="!group.parent_id && group.enabled" :group="group" :level="2"></group-item>
+				</ul>
+				</template>
+			</div>
 		</div>
-		<ul class="list-group list-group-flush">
-			<template v-for="group of groups">
-			<group-item v-if="!group.parent_id && group.enabled" :group="group"></group-item>
-			</template>
-		</ul>
 	</div>
 </template>
 <script>
@@ -39,10 +40,6 @@
 					title: '',
 					enabled: true,
 				},
-				tableHeaders: [
-					'Прізвище та ім\'я',
-					'Контакти'
-				],
 				selectedGroups: [0],
 				selectedGroupOptions: [],
       };
@@ -59,13 +56,30 @@
 						app.selectedGroupOptions = app.groups.slice();
 						app.selectedGroupOptions.unshift(app.emptyGroup);
 						app.selectedGroupOptions[0].title = 'Всі';
+						app.groups.forEach((group) => {
+							group.hidden = false;
+							group.children.forEach((child) => {
+								child.hidden = false;
+							});
+						});
           })
           .catch(function () {
             alert('Could not load groups!');
           });
       },
 			filterGroups() {
-				
+				this.hideGroups(this.groups);
+			},
+			hideGroups(groups) {
+				var app = this;
+				groups.forEach((group) => {
+					if (app.selectedGroups.includes(0)) {
+						group.hidden = false;
+					} else {
+						group.hidden = !app.selectedGroups.includes(group.id);
+					}
+					//if (group.children) app.hideGroups(group.children);
+				});
 			},
     }
   };

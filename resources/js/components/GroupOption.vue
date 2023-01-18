@@ -1,14 +1,14 @@
 <template>
   <option :value="group.id">
-		{{ group.title }}
+	{{ indent }}{{ group.title }}
   </option>
 	<template v-for="child of group.children">
-		<group-option v-if="group.enabled" :group="child"></group-option>
+		<group-option v-if="group.enabled" :group="child" :indent="'&nbsp;&nbsp;' + indent"></group-option>
 	</template>
 </template>
  
 <script>
 	export default {
-		props: [ 'group' ],
+		props: [ 'group', 'indent' ],
 	};
 </script>
