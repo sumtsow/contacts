@@ -20,14 +20,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/contacts/{uid?}', [ContactController::class, 'index'])->where('uid', '[0-9]+');
+Route::get('/contacts/{uid?}', [ContactController::class, 'index'])->where('uid', '[0-9]+')->middleware('auth');
 
-Route::get('/groups', [GroupController::class, 'index']);
+Route::get('/groups', [GroupController::class, 'index'])->middleware('auth');
 
-Route::get('/group/{id}', [GroupController::class, 'show'])->where('id', '[0-9]+');
+Route::get('/group/{id}', [GroupController::class, 'show'])->where('id', '[0-9]+')->middleware('auth');
 
-Route::get('/subscribers', [SubscriberController::class, 'index']);
+Route::get('/subscribers', [SubscriberController::class, 'index'])->middleware('auth');
 
-Route::get('/types', [TypeController::class, 'index']);
+Route::get('/types', [TypeController::class, 'index'])->middleware('auth');
 
-Route::get('/intypes', [TypeController::class, 'show']);
+Route::get('/intypes', [TypeController::class, 'show'])->middleware('auth');
