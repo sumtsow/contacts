@@ -107,7 +107,7 @@
     mounted() {
 			this.clearGroup();
       this.getGroups();
-			this.getGroups(1);
+			this.getGroupSelectOptions();
     },
     methods: {
       clearGroup() {
@@ -118,16 +118,25 @@
         axios.get('/api/groups')
           .then(function (resp) {
 						app.groups = resp.data;
-						app.getGroupSelectOptions();
           })
           .catch(function () {
             app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати групи!'] };
           });
       },
+			getAllGroups() {
+				
+      },
 			getGroupSelectOptions() {
-				this.groupSelectOptions = this.groups.slice();
-				this.groupSelectOptions.unshift(this.emptyGroup);
-				this.groupSelectOptions[0].title = 'немає';
+				var app = this;
+        axios.get('/api/groups/1')
+          .then(function (resp) {
+						app.groupSelectOptions = resp.data;
+						app.groupSelectOptions.unshift(app.emptyGroup);
+						app.groupSelectOptions[0].title = 'немає';
+          })
+          .catch(function () {
+            app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати групи!'] };
+          });
       },
 			pushState() {
 				this.prevState.enabled = this.currentGroup.enabled;

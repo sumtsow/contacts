@@ -206,7 +206,7 @@
       },
 			getGroups() {
 				var app = this;
-        axios.get('/api/groups')
+        axios.get('/api/groups/1')
           .then(function (resp) {
 						app.groups = resp.data;
           })
