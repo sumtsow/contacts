@@ -7,7 +7,7 @@
 			<label for="group-select-box" class="form-label">Показати:</label>
 			<select v-model="selectedGroups" id="group-select-box" multiple class="form-select multiple mb-3" @change="filterGroups">
 				<template v-for="group of selectedGroupOptions">
-				<group-option v-if="!group.parent_id && group.enabled" :group="group" :indent="''"></group-option>
+				<group-option v-if="group.enabled" :group="group" :indent="''"></group-option>
 				</template>
 			</select>
 		</div>
@@ -17,7 +17,7 @@
 			<div class="col">
 				<template v-for="group of groups">
 					<ul class="list-group list-group-flush" :class="{'d-none': group.hidden}">
-					<group-item v-if="!group.parent_id && group.enabled" :group="group" :level="2"></group-item>
+					<group-item v-if="!group.parent_id && group.enabled" :group="group" :level="defaultHeaderLevel"></group-item>
 				</ul>
 				</template>
 			</div>
@@ -42,6 +42,7 @@
 				},
 				selectedGroups: [0],
 				selectedGroupOptions: [],
+				defaultHeaderLevel: 2,
       };
     },
     mounted() {
@@ -56,29 +57,41 @@
 						app.selectedGroupOptions = app.groups.slice();
 						app.selectedGroupOptions.unshift(app.emptyGroup);
 						app.selectedGroupOptions[0].title = 'Всі';
-						app.groups.forEach((group) => {
-							group.hidden = false;
-							group.children.forEach((child) => {
-								child.hidden = false;
-							});
-						});
+						app.toggleAllGroups(app.groups, false);
           })
           .catch(function () {
             alert('Could not load groups!');
           });
       },
 			filterGroups() {
+				this.toggleAllGroups(this.groups, false);
 				this.hideGroups(this.groups);
 			},
 			hideGroups(groups) {
+				if (!groups) return;
 				var app = this;
+				var allSelected = this.selectedGroups.includes(0);
 				groups.forEach((group) => {
-					if (app.selectedGroups.includes(0)) {
+					if (!group.enabled) return;
+					if (allSelected) {
 						group.hidden = false;
 					} else {
 						group.hidden = !app.selectedGroups.includes(group.id);
+						if (!group.hidden && group.parent_id) {
+							var parent = app.groups.find(elem => elem.id == group.parent_id);
+							if (parent) parent.hidden = false;
+						}
 					}
-					//if (group.children) app.hideGroups(group.children);
+					if (group.hidden && group.children) app.hideGroups(group.children);
+				});
+			},
+			toggleAllGroups(groups, state) {
+				if (!groups) return;
+				var app = this;
+				groups.forEach((group) => {
+					if (!group.enabled) return;
+					group.hidden = !!state;
+					if (group.children) app.toggleAllGroups(group.children, !!state);
 				});
 			},
     }

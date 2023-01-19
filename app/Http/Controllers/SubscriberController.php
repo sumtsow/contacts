@@ -14,7 +14,7 @@ class SubscriberController extends Controller
      */
     public function index()
     {
-      return response()->json(Subscriber::all());
+      return response()->json(Subscriber::with('group')->get());
     }
 
     /**

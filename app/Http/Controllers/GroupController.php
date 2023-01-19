@@ -14,7 +14,7 @@ class GroupController extends Controller
      */
     public function index()
     {
-      return response()->json(Group::orderBy('title')->get());
+      return response()->json(Group::where('parent_id', null)->orderBy('title')->get());
     }
 
     /**
