@@ -57,17 +57,17 @@
 						app.selectedGroupOptions = app.groups.slice();
 						app.selectedGroupOptions.unshift(app.emptyGroup);
 						app.selectedGroupOptions[0].title = 'Всі';
-						app.toggleAllGroups(app.groups, false);
+						app.setGroupsHidden(app.groups, false, true);
           })
           .catch(function () {
             alert('Could not load groups!');
           });
       },
 			filterGroups() {
-				this.toggleAllGroups(this.groups, false);
-				this.hideGroups(this.groups);
+				this.setGroupsHidden(this.groups, false, true);
+				this.hideGroups(this.groups, null);
 			},
-			hideGroups(groups) {
+			hideGroups(groups, currentParent) {
 				if (!groups) return;
 				var app = this;
 				var allSelected = this.selectedGroups.includes(0);
@@ -76,22 +76,24 @@
 					if (allSelected) {
 						group.hidden = false;
 					} else {
-						group.hidden = !app.selectedGroups.includes(group.id);
-						if (!group.hidden && group.parent_id) {
-							var parent = app.groups.find(elem => elem.id == group.parent_id);
-							if (parent) parent.hidden = false;
-						}
+						group.hideContacts = group.hidden = !app.selectedGroups.includes(group.id);
+						group.parent = currentParent ? currentParent.parent.slice() : [];
+						if (currentParent) group.parent.push(currentParent);
+						if (group.parent_id && !group.hidden) app.setGroupsHidden(group.parent, false, false);
 					}
-					if (group.hidden && group.children) app.hideGroups(group.children);
+					if (group.hidden && group.children) {
+						app.hideGroups(group.children, group);
+					}
 				});
 			},
-			toggleAllGroups(groups, state) {
+			setGroupsHidden(groups, state, withChildren) {
+				state = !!state;
 				if (!groups) return;
 				var app = this;
 				groups.forEach((group) => {
-					if (!group.enabled) return;
-					group.hidden = !!state;
-					if (group.children) app.toggleAllGroups(group.children, !!state);
+					if (!group || !group.enabled) return;
+					group.hidden = state;
+					if (withChildren && group.children) app.setGroupsHidden(group.children, state, true);
 				});
 			},
     }

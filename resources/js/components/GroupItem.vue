@@ -7,7 +7,7 @@
 		</ul>
 		</template>
 		<ul v-for="subscriber of group.subscriber" class="list-group list-group-flush">
-			<li class="list-group-item border-bottom px-0" v-if="subscriber.enabled">
+			<li v-if="subscriber.enabled" class="list-group-item border-bottom px-0" :class="{'d-none': group.hideContacts}">
 				<div class="row">
 					<div class="col">{{ subscriber.lastname }} {{ subscriber.firstname }}</div>
 					<div class="col">
