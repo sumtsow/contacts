@@ -5,7 +5,7 @@
 	<div class="row">
 		<div class="col">
 			<label for="group-select-box" class="form-label">Показати:</label>
-			<select v-model="selectedGroups" id="group-select-box" multiple class="form-select multiple mb-3" @change="filterGroups">
+			<select v-model="selectedGroups" id="group-select-box" multiple class="form-select multiple mb-3" @change="filterGroups" :size="selectSize">
 				<template v-for="group of selectedGroupOptions">
 				<group-option v-if="group.enabled" :group="group" :indent="''"></group-option>
 				</template>
@@ -32,6 +32,11 @@
       GroupItem,
 			GroupOption,
     },
+		computed: {
+			selectSize() {
+				return Math.min(this.groups.length + 1, 10);
+			},
+		},
     data() {
       return {
         groups: [],
