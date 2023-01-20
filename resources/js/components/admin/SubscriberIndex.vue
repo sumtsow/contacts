@@ -91,7 +91,7 @@
 						</div>
 						</template>
 					</form>
-					<div class="row justify-content-end">
+					<div v-if="currentSubscriber.id" class="row justify-content-end">
 						<div class="col-auto" data-bs-dismiss="modal">
 							<button class="btn btn-primary" data-bs-target="#contactEditModal" data-bs-toggle="modal" @click="clearContact">Додати контакт</button>
 						</div>
