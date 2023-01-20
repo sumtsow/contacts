@@ -62,14 +62,14 @@
 						app.selectedGroupOptions = app.groups.slice();
 						app.selectedGroupOptions.unshift(app.emptyGroup);
 						app.selectedGroupOptions[0].title = 'Всі';
-						app.setGroupsHidden(app.groups, false, true);
+						app.resetGroupsHidden(app.groups, true);
           })
           .catch(function () {
             alert('Could not load groups!');
           });
       },
 			filterGroups() {
-				this.setGroupsHidden(this.groups, false, true);
+				this.resetGroupsHidden(this.groups, true);
 				this.hideGroups(this.groups, null);
 			},
 			hideGroups(groups, currentParent) {
@@ -84,21 +84,21 @@
 						group.hideContacts = group.hidden = !app.selectedGroups.includes(group.id);
 						group.parent = currentParent ? currentParent.parent.slice() : [];
 						if (currentParent) group.parent.push(currentParent);
-						if (group.parent_id && !group.hidden) app.setGroupsHidden(group.parent, false, false);
+						if (group.parent_id && !group.hidden) app.resetGroupsHidden(group.parent, false);
 					}
-					if (group.hidden && group.children) {
-						app.hideGroups(group.children, group);
-					}
+					if (group.hidden && group.children) app.hideGroups(group.children, group);
 				});
 			},
-			setGroupsHidden(groups, state, withChildren) {
-				state = !!state;
+			resetGroupsHidden(groups, withChildren) {
 				if (!groups) return;
 				var app = this;
 				groups.forEach((group) => {
 					if (!group || !group.enabled) return;
-					group.hidden = state;
-					if (withChildren && group.children) app.setGroupsHidden(group.children, state, true);
+					group.hidden = false;
+					if (withChildren && group.children) {
+						app.resetGroupsHidden(group.children, true);
+						group.hideContacts = false;
+					}
 				});
 			},
     }

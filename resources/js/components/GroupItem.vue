@@ -1,11 +1,6 @@
 <template>
   <li class="list-group-item bg-secondary text-white p-0">
 		<div class="m-3" :class="'h' + level">{{ group.title }}</div>
-		<template v-for="child of group.children">
-		<ul class="list-group list-group-flush" :class="{'d-none': child.hidden}">
-			<group-item v-if="group.enabled" :group="child" :level="hlevel"></group-item>
-		</ul>
-		</template>
 		<ul v-for="subscriber of group.subscriber" class="list-group list-group-flush">
 			<li v-if="subscriber.enabled" class="list-group-item border-bottom px-0" :class="{'d-none': group.hideContacts}">
 				<div class="row">
@@ -20,6 +15,11 @@
 				</div>
 			</li>
 		</ul>
+		<template v-for="child of group.children">
+		<ul class="list-group list-group-flush" :class="{'d-none': child.hidden}">
+			<group-item v-if="group.enabled" :group="child" :level="hlevel"></group-item>
+		</ul>
+		</template>
 	</li>
 </template>
  
