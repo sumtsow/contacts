@@ -2,7 +2,7 @@
   <tr class="position-relative" :class="{ 'text-muted': (group && !group.enabled) }" data-bs-toggle="modal" data-bs-target="#groupEditModal" style="cursor: pointer" @click="handler(group)">
       <td>{{ group.id }}</td>
       <td>{{ group.title }}</td>
-      <td>{{ parent ? parent.title : '' }}</td>
+      <td :class="{ 'text-muted': (parent && !parent.enabled) }">{{ parent ? parent.title : '' }}</td>
       <td>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" :id="['enabled-' + group.id]" :checked="group.enabled > 0" disabled />
