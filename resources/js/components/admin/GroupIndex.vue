@@ -112,6 +112,7 @@
     methods: {
       clearGroup() {
         this.currentGroup = Object.assign({}, this.emptyGroup);
+				this.currentGroup.title = '';
       },
       getGroups() {
 				var app = this;
@@ -130,7 +131,7 @@
 				var app = this;
         axios.get('/api/groups/1')
           .then(function (resp) {
-						app.groupSelectOptions = resp.data;
+						app.groupSelectOptions = resp.data.slice();
 						app.groupSelectOptions.unshift(app.emptyGroup);
 						app.groupSelectOptions[0].title = 'немає';
           })

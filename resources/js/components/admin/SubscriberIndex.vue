@@ -76,7 +76,7 @@
             </div>
 						<div id="form-col-2" class="row input-group mb-3">
               <label class="col-form-label col-4 text-right" label-for="group-select">Група</label>
-              <select v-model="currentSubscriber.group_id" class="col form-select form-select-sm" id="group-select" required="required">
+              <select v-model="currentSubscriber.group_id" class="col form-select form-select-sm" id="group-select" required="required" @click="selectGroup(currentSubscriber.group)">
 								<template v-for="item in groups">
                 <option :value="item.id">
                   {{ item.title }}
@@ -162,7 +162,7 @@
 					id: null,
 					value: '',
 					subscriber_id: null,
-					type_id: null,
+					type_id: 1,
 					enabled: true,
 					type: {}
 				},
@@ -311,12 +311,12 @@
         this.currentSubscriber._token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         var app = this;
         axios.post('/subscriber/' + id, this.currentSubscriber)
-          .then(function () {
+          .then(function (resp) {
 						if (resp.data.errors) {
 							app.resetSubscriber();
 							app.alert = resp.data;
 						} else {
-							app.getSubscribers();
+							if (!id) app.subscribers.push(resp.data[0]);
 							app.alert = { message: 'Збережено!', success: true };
 						}
           })
@@ -334,6 +334,10 @@
 				this.currentContact.enabled = !!this.currentContact.enabled;
 				this.alert = null;
       },
+			selectGroup() {
+				var app = this;
+				this.currentSubscriber.group = this.groups.find(elem => elem.id == app.currentSubscriber.group_id);
+      },
       selectSubscriber(subscr) {
 				if (!subscr) return;
 				this.currentSubscriber = subscr;
@@ -342,7 +346,8 @@
 				this.alert = null;
       },
 			selectTypeId() {
-				this.currentContact.type.input_type = this.types.find(elem => elem.id == this.currentContact.type_id).input_type;
+				var app = this;
+				this.currentContact.type.input_type = this.types.find(elem => elem.id == app.currentContact.type_id).input_type;
 			},
 			setModalHandlers() {
 				var app = this;

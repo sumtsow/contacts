@@ -35,6 +35,8 @@ class SubscriberController extends Controller
 			$subscriber->lastname = $request->lastname ?? '';
       $subscriber->enabled = intval($request->enabled);
 			$subscriber->save();
+			$subscriber->group;
+			$subscriber->contact;
       return response()->json([ $subscriber ]);
     }
 }
