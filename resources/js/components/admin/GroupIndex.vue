@@ -78,7 +78,7 @@
   export default {
     components: {
       Breadcrumbs,
-      GroupTableRow
+      GroupTableRow,
     },
 		computed: {
 			alertClass() {

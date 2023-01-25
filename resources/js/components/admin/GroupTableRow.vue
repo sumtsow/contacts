@@ -9,8 +9,8 @@
           <label class="form-check-label" :for="['enabled-' + group.id]" />
         </div>
       </td>
-      <td>{{ new Date(group.created_at).toLocaleString() }}</td>
-      <td>{{ new Date(group.updated_at).toLocaleString() }}</td>
+      <td><date-format :date="group.created_at"/></td>
+			<td><date-format :date="group.updated_at"/></td>
   </tr>
   <template v-for="child of group.children">
     <group-table-row :group="child" :parent="group" :handler="handler"></group-table-row>
@@ -18,7 +18,11 @@
 </template>
  
 <script>
+	import DateFormat from '../DateFormat.vue';
 	export default {
+		components: {
+			DateFormat,
+    },
 		props: [ 'group', 'parent', 'handler' ],
 	};
 </script>

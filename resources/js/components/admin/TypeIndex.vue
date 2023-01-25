@@ -36,8 +36,8 @@
                   <label class="form-check-label" :for="['enabled-' + type.id]" />
                 </div>
               </td>
-              <td>{{ new Date(type.created_at).toLocaleString() }}</td>
-              <td>{{ new Date(type.updated_at).toLocaleString() }}</td>
+              <td><date-format :date="type.created_at"/></td>
+              <td><date-format :date="type.updated_at"/></td>
           </tr>
         </tbody>
       </table>
@@ -83,9 +83,11 @@
 </template>
 <script>
   import Breadcrumbs from '../Breadcrumbs.vue';
+	import DateFormat from '../DateFormat.vue';
   export default {
     components: {
       Breadcrumbs,
+			DateFormat,
     },
 		computed: {
 			alertClass() {
