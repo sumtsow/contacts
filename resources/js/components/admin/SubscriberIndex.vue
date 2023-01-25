@@ -316,7 +316,7 @@
 							app.resetSubscriber();
 							app.alert = resp.data;
 						} else {
-							if (!id) app.subscribers.push(resp.data[0]);
+							if (!id) app.subscribers.unshift(resp.data[0]);
 							app.alert = { message: 'Збережено!', success: true };
 						}
           })
