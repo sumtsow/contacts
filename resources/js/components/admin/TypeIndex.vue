@@ -17,8 +17,8 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>ID&nbsp;&uarr;</th>
-            <th>Титул</th>
+            <th>ID</th>
+            <th>Титул&nbsp;&uarr;</th>
 						<th>Формат</th>
             <th>Статус</th>
             <th>Створено</th>

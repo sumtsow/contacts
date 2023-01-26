@@ -17,7 +17,7 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>ID&nbsp;&uarr;</th>
+            <th>ID&nbsp;&darr;</th>
             <th>Прізвище та ім'я</th>
 						<th>Група</th>
 						<th>Контакти</th>

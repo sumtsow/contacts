@@ -1,7 +1,7 @@
 <template>
   <tr class="position-relative" :class="{ 'text-muted': (group && !group.enabled) }" data-bs-toggle="modal" data-bs-target="#groupEditModal" style="cursor: pointer" @click="handler(group)">
       <td>{{ group.id }}</td>
-      <td>{{ group.title }}</td>
+      <td>{{ group.title }} {{ group.children.length ? ' (' + group.children.length + ')' : '' }}</td>
       <td :class="{ 'text-muted': (parent && !parent.enabled) }">{{ parent ? parent.title : '' }}</td>
       <td>
         <div class="form-check form-switch">
