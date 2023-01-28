@@ -197,9 +197,6 @@
 			this.setModalHandlers();
     },
     methods: {
-			addContact() {
-				console.log('Add');
-			},
 			clearContact() {
         this.currentContact = Object.assign({}, this.emptyContact);
       },
