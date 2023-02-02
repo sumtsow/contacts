@@ -14,7 +14,7 @@ class SubscriberController extends Controller
      */
     public function index()
     {
-      return response()->json(Subscriber::with('contact', 'group')->orderBy('id', 'desc')->get());
+      return response()->json(Subscriber::orderBy('id', 'desc')->get());
     }
 
     /**

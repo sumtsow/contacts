@@ -9,7 +9,7 @@ class Subscriber extends Model
 {
     use HasFactory;
     protected $table = 'subscriber';
-		//protected $with = ['contact'];
+		protected $with = ['contact'];
     
     public function contact()
 	{

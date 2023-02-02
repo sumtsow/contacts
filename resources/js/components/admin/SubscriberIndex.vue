@@ -30,7 +30,7 @@
           <tr v-for="subscriber of subscribers" class="position-relative" :class="{ 'text-muted': !subscriber.enabled }" data-bs-toggle="modal" data-bs-target="#subscriberEditModal" @click="selectSubscriber(subscriber)" style="cursor: pointer">
               <td>{{ subscriber.id }}</td>
               <td>{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
-							<td>{{ subscriber.group.title }}</td>
+							<td>{{ groupTitle(subscriber.group_id) }}</td>
 							<td>
 								<div v-for="contact of subscriber.contact" :class="{ 'text-muted': !contact.enabled }">{{ contact.value }}</div>
 							</td>
@@ -243,6 +243,11 @@
 						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати типи контакту!'] };
           });
       },
+			groupTitle(gid) {
+				if (!gid || !this.groups.length) return;
+				var group = this.groups.find(elem => elem.id == gid);
+				return group ? group.title : '';
+			},
 			pushContactState() {
 				this.prevContactState.enabled = this.currentContact.enabled;
 				this.prevContactState.value = this.currentContact.value;
