@@ -121,7 +121,7 @@
             </div>
             <div class="mb-3">
               <label for="contact-value" class="col-form-label">Контакт</label>
-              <input :type="(currentContact ? currentContact.type.input_type : 'text')" class="form-control" id="contact-value" v-model="currentContact.value" required="required">
+              <input :type="((currentContact && currentContact.type) ? currentContact.type.input_type : 'text')" class="form-control" id="contact-value" v-model="currentContact.value" required="required">
             </div>
 						<div id="form-col-2" class="row input-group mb-3">
               <label class="col-form-label col-4 text-right" label-for="type-select">Тип</label>
@@ -283,6 +283,8 @@
         this.currentContact._token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 				if (!this.currentContact.subscriber_id) this.currentContact.subscriber_id = this.currentSubscriber.id;
         var app = this;
+				if (!id)  app.currentSubscriber.contact.push(app.currentContact);
+				this.currentContact.type = this.types.find(elem => elem.id == app.currentContact.type_id);
         axios.post('/contact/' + id, this.currentContact)
           .then(function (resp) {
 						if (resp.data.errors) {
@@ -290,14 +292,9 @@
 							app.alert = resp.data;
 						} else {
 							app.getSubscribers();
-							app.currentContact.type = app.types.find(elem => elem.id == app.currentContact.type_id);
 							app.currentContact = resp.data[0];
-							if (!id) {
-								app.currentSubscriber.contact.push(app.currentContact);
-							} else {
-								var index = app.currentSubscriber.contact.findIndex(elem => elem.id == app.currentContact.id);
-								app.currentSubscriber.contact[index] = app.currentContact;
-							}
+							var index = app.currentSubscriber.contact.findIndex(elem => elem.id == app.currentContact.id);
+							app.currentSubscriber.contact[index] = app.currentContact;
 							app.alert = { message: 'Збережено!', success: true };
 						}
           })
