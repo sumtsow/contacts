@@ -24,7 +24,7 @@ class StoreContactRequest extends FormRequest
     public function rules()
     {
       return [
-        'value' => 'string|max:255|unique:contact,value',
+        'value' => 'string|max:255',
         'enabled' => 'filled',
         'subscriber_id' => 'integer|exists:subscriber,id',
 				'type_id' => 'integer|exists:type,id',

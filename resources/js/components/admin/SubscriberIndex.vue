@@ -164,7 +164,7 @@
 					id: null,
 					value: '',
 					subscriber_id: null,
-					type_id: 1,
+					type_id: 2,
 					enabled: true,
 					type: {}
 				},
