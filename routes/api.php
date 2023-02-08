@@ -22,11 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/contacts/{uid?}', [ContactController::class, 'index'])->where('uid', '[0-9]+')->middleware('auth');
 
-Route::get('/groups/{id?}', [GroupController::class, 'index'])->where('uid', '[0-9]+')->middleware('auth');
+Route::get('/groups/{all?}', [GroupController::class, 'index'])->where('all', '[0,1]+')->middleware('auth');
 
-Route::get('/group/{id}', [GroupController::class, 'show'])->where('id', '[0-9]+')->middleware('auth');
-
-Route::get('/subscribers', [SubscriberController::class, 'index'])->middleware('auth');
+Route::get('/subscribers/{gid?}', [SubscriberController::class, 'index'])->where('gid', '[0-9]+')->middleware('auth');
 
 Route::get('/types', [TypeController::class, 'index'])->middleware('auth');
 

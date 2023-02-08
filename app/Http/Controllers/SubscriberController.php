@@ -10,11 +10,14 @@ class SubscriberController extends Controller
     /**
      * Display a listing of the resource.
      *
+		 * @param  int  $gid
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(int $gid = 0)
     {
-      return response()->json(Subscriber::orderBy('id', 'desc')->get());
+			$query = Subscriber::orderBy('id', 'desc');
+			if ($gid) $query->where('group_id', $gid);
+      return response()->json($query->paginate(config('app.perpage')));
     }
 
     /**

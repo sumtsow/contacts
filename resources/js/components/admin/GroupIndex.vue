@@ -96,7 +96,7 @@
 				emptyGroup: {
 					id: null,
 					title: '',
-					enabled: true,
+					enabled: 1,
 					parent_id: null
 				},
 				currentGroup: {},
@@ -107,7 +107,6 @@
     mounted() {
 			this.clearGroup();
       this.getGroups();
-			this.getGroupSelectOptions();
     },
     methods: {
       clearGroup() {
@@ -119,21 +118,10 @@
         axios.get('/api/groups')
           .then(function (resp) {
 						app.groups = resp.data;
-          })
-          .catch(function () {
-            app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати групи!'] };
-          });
-      },
-			getAllGroups() {
-				
-      },
-			getGroupSelectOptions() {
-				var app = this;
-        axios.get('/api/groups/1')
-          .then(function (resp) {
-						app.groupSelectOptions = resp.data.slice();
+						app.groupSelectOptions = [...app.groups];
 						app.groupSelectOptions.unshift(app.emptyGroup);
 						app.groupSelectOptions[0].title = 'немає';
+						console.log(app.groupSelectOptions);
           })
           .catch(function () {
             app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати групи!'] };

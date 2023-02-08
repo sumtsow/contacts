@@ -10,9 +10,10 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      *
+		 * @param  int  $all
      * @return \Illuminate\Http\Response
      */
-    public function index($all = null)
+    public function index(int $all = 0)
     {
 			$query = Group::orderBy('title');
 			if (!$all) $query->where('parent_id', null);

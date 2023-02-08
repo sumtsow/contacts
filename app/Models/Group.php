@@ -9,7 +9,7 @@ class Group extends Model
 {
 	use HasFactory;
 	protected $table = 'group';
-	protected $with = ['children', 'subscriber'];
+	protected $with = ['children'];
     
 	public function subscriber()
 	{

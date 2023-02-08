@@ -16,7 +16,7 @@
       <div id="app" class="container">
         @yield('nav')
         @yield('content')
-				<button type="button" class="btn btn-outline-secondary position-fixed bottom-0 end-0 m-3" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">&uArr;</button>
+				<button type="button" class="btn btn-light border border-secondary position-fixed bottom-0 end-0 m-3" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">&uArr;</button>
       </div>
     </body>
 </html>

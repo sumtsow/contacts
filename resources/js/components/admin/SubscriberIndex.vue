@@ -7,11 +7,12 @@
 			<p v-for="line of alert.errors">{{ line }}</p>
 		</div>
   </div>
-	<div class="row justify-content-end">
+	<div class="row justify-content-end mb-3">
     <div class="col-auto">
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subscriberEditModal" @click="clearSubscriber">Додати</button>
     </div>
   </div>
+		<page-nav :links="pages.links" :handler="getPage"></page-nav>
   <div class="row">
     <div class="col table-responsive">
       <table class="table table-striped">
@@ -47,6 +48,7 @@
       </table>
     </div>
   </div>
+	<page-nav :links="pages.links" :handler="getPage"></page-nav>
 	<div class="modal fade" id="subscriberEditModal" aria-hidden="true" aria-labelledby="subscriberEditModalLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
@@ -150,6 +152,16 @@
     components: {
       Breadcrumbs,
 			DateFormat,
+			PageNav: {
+				template: `<nav aria-label="Сторінки">
+		<ul class="pagination justify-content-center">
+			<li v-for="link of links" class="page-item overflow-hidden text-nowrap">
+				<a class="page-link" :class="{ active: link.active }" :href="link.url" v-html="link.label" @click.prevent="handler"></a>
+			</li>
+		</ul>
+	</nav>`,
+				props: [ 'links', 'handler' ],
+			},
     },
 		computed: {
 			alertClass() {
@@ -159,7 +171,6 @@
     data() {
       return {
         breadcrumbs: [{ href: '/dashboard', text: 'Домашня' },{ href: false, text: 'Контакти' }],
-        subscribers: {},
 				emptyContact: {
 					id: null,
 					value: '',
@@ -179,8 +190,10 @@
 				currentContact: {type: {}},
 				prevState: {},
 				prevContactState: {},
-				groups: {},
-				types: {},
+				groups: [],
+				pages: {},
+				subscribers: [],
+				types: [],
 				inputTypes: [],
 				alert: null,
 				modalIsShown: false,
@@ -223,11 +236,16 @@
 						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати типи поля введення!'] };
           });
       },
-      getSubscribers() {
+			getPage(e) {
+				var page = parseInt(new URL(e.target.href).searchParams.get('page'), 10);
+        this.getSubscribers(page);
+			},
+      getSubscribers(page) {
         var app = this;
-        axios.get('/api/subscribers')
+        axios.get('/api/subscribers' + (page ? '?page=' + page : ''))
           .then(function (resp) {
-            app.subscribers = resp.data;
+						app.pages = resp.data;
+            app.subscribers = app.pages.data;
           })
           .catch(function () {
 						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати контакти!'] };
