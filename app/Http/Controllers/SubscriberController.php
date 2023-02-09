@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\Subscriber;
 use App\Http\Requests\StoreSubscriberRequest;
 
@@ -10,13 +11,20 @@ class SubscriberController extends Controller
     /**
      * Display a listing of the resource.
      *
-		 * @param  int  $gid
+		 * @param  int  $groupped
+		 * @param  int  $gid group id
      * @return \Illuminate\Http\Response
      */
-    public function index(int $gid = 0)
+    public function index(int $groupped = 0, int $gid = 0)
     {
-			$query = Subscriber::orderBy('id', 'desc');
-			if ($gid) $query->where('group_id', $gid);
+			$groupOrder = [];
+			if ($groupped) {
+				$query = Subscriber::orderBy('group_id');
+				//$groups = Group::orderBy('title')->where('parent_id', null);
+			} else {
+				$query = Subscriber::orderBy('id', 'desc');
+			}
+			if ($groupped && $gid) $query->where('group_id', $gid);
       return response()->json($query->paginate(config('app.perpage')));
     }
 

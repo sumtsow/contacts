@@ -24,7 +24,7 @@ Route::get('/contacts/{uid?}', [ContactController::class, 'index'])->where('uid'
 
 Route::get('/groups/{all?}', [GroupController::class, 'index'])->where('all', '[0,1]+')->middleware('auth');
 
-Route::get('/subscribers/{gid?}', [SubscriberController::class, 'index'])->where('gid', '[0-9]+')->middleware('auth');
+Route::get('/subscribers/{groupped?}/{gid?}', [SubscriberController::class, 'index'])->where('groupped', '[0,1]+')->where('gid', '[0-9]+')->middleware('auth');
 
 Route::get('/types', [TypeController::class, 'index'])->middleware('auth');
 

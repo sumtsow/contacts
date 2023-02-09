@@ -16,7 +16,11 @@ class GroupController extends Controller
     public function index(int $all = 0)
     {
 			$query = Group::orderBy('title');
-			if (!$all) $query->where('parent_id', null);
+			if ($all) {
+				$query->without('children');
+			} else {
+				$query->where('parent_id', null);
+			}
       return response()->json($query->get());
     }
 

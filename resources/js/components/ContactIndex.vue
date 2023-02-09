@@ -71,7 +71,7 @@
       },
 			getSubscribers() {
         var app = this;
-        axios.get('/api/subscribers')
+        axios.get('/api/subscribers/1')
           .then(function (resp) {
             app.pages = resp.data;
             app.subscribers = app.pages.data;
