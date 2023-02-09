@@ -148,20 +148,12 @@
 <script>
   import Breadcrumbs from '../Breadcrumbs.vue';
 	import DateFormat from '../DateFormat.vue';
+	import PageNav from '../PageNav.vue';
   export default {
     components: {
       Breadcrumbs,
 			DateFormat,
-			PageNav: {
-				template: `<nav aria-label="Сторінки">
-		<ul class="pagination justify-content-center">
-			<li v-for="link of links" class="page-item overflow-hidden text-nowrap">
-				<a class="page-link" :class="{ active: link.active }" :href="link.url" v-html="link.label" @click.prevent="handler"></a>
-			</li>
-		</ul>
-	</nav>`,
-				props: [ 'links', 'handler' ],
-			},
+			PageNav,
     },
 		computed: {
 			alertClass() {
@@ -237,14 +229,13 @@
           });
       },
 			getPage(e) {
-				var page = parseInt(new URL(e.target.href).searchParams.get('page'), 10);
-        this.getSubscribers(page);
+        this.getSubscribers(parseInt(new URL(e.target.href).searchParams.get('page'), 10));
 			},
       getSubscribers(page) {
         var app = this;
         axios.get('/api/subscribers' + (page ? '?page=' + page : ''))
           .then(function (resp) {
-						app.pages = resp.data;
+						app.pages = resp.data.pages;
             app.subscribers = app.pages.data;
           })
           .catch(function () {

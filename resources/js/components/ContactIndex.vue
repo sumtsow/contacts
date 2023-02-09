@@ -13,22 +13,26 @@
 		</div>
 	</div>
 	<div class="container">
-		<div class="row">
+		<page-nav :links="pages.links" :handler="getPage"></page-nav>
+		<div class="row mb-3">
 			<div class="col">
 				<template v-for="group of groups">
 					<group-item v-if="!group.parent_id" :group="group" :level="defaultHeaderLevel" :subscribers="subscribers"></group-item>
 				</template>
 			</div>
 		</div>
+		<page-nav :links="pages.links" :handler="getPage"></page-nav>
 	</div>
 </template>
 <script>
 	import GroupItem from './GroupItem.vue';
 	import GroupOption from './GroupOption.vue';
+	import PageNav from './PageNav.vue';
   export default {
 		components: {
       GroupItem,
 			GroupOption,
+			PageNav,
     },
 		computed: {
 			selectSize() {
@@ -40,6 +44,7 @@
         groups: [],
 				pages: {},
 				subscribers: [],
+				//groupList: [],
 				emptyGroup: {
 					id: 0,
 					title: '',
@@ -69,11 +74,15 @@
             alert('Could not load groups!');
           });
       },
-			getSubscribers() {
+			getPage(e) {
+        this.getSubscribers(parseInt(new URL(e.target.href).searchParams.get('page'), 10));
+			},
+			getSubscribers(page) {
         var app = this;
-        axios.get('/api/subscribers/1')
+        axios.get('/api/subscribers/1' + (page ? '?page=' + page : ''))
           .then(function (resp) {
-            app.pages = resp.data;
+            app.pages = resp.data.pages;
+						//app.groupList = resp.data.groups;
             app.subscribers = app.pages.data;
           })
           .catch(function () {

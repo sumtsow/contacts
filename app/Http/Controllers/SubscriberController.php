@@ -17,15 +17,19 @@ class SubscriberController extends Controller
      */
     public function index(int $groupped = 0, int $gid = 0)
     {
-			$groupOrder = [];
+			$groups = [];
 			if ($groupped) {
-				$query = Subscriber::orderBy('group_id');
-				//$groups = Group::orderBy('title')->where('parent_id', null);
+				$groups = implode(', ', Group::getList());
+				//die($groups);
+				$query = Subscriber::orderByRaw('FIELD("group_id", "' . $groups . '")');
 			} else {
 				$query = Subscriber::orderBy('id', 'desc');
 			}
 			if ($groupped && $gid) $query->where('group_id', $gid);
-      return response()->json($query->paginate(config('app.perpage')));
+      return response()->json([
+				'pages' => $query->paginate(config('app.perpage')),
+				//'groups' => $groups
+			]);
     }
 
     /**
