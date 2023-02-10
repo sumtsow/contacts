@@ -64,11 +64,9 @@
 				var app = this;
         axios.get('/api/groups')
           .then(function (resp) {
-						app.groups = resp.data;
-						app.selectedGroupOptions = [...app.groups];
+						app.selectedGroupOptions = [...resp.data];
 						app.selectedGroupOptions.unshift(app.emptyGroup);
 						app.selectedGroupOptions[0].title = 'Всі';
-						app.resetGroupsHidden(app.groups, true);
           })
           .catch(function () {
             alert('Could not load groups!');
@@ -82,8 +80,10 @@
         axios.get('/api/subscribers/1' + (page ? '?page=' + page : ''))
           .then(function (resp) {
             app.pages = resp.data.pages;
-						//app.groupList = resp.data.groups;
+						app.groups = resp.data.groups;
             app.subscribers = app.pages.data;
+						app.resetGroupsHidden(app.groups, true);
+						console.log(app.groups);
           })
           .catch(function () {
 						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати контакти!'] };

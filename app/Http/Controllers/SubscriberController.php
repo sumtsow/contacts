@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\Subscriber;
 use App\Http\Requests\StoreSubscriberRequest;
+use Illuminate\Support\Facades\DB;
 
 class SubscriberController extends Controller
 {
@@ -20,15 +21,16 @@ class SubscriberController extends Controller
 			$groups = [];
 			if ($groupped) {
 				$groups = implode(', ', Group::getList());
-				//die($groups);
-				$query = Subscriber::orderByRaw('FIELD("group_id", "' . $groups . '")');
+				$query = Subscriber::orderByRaw('FIELD(`group_id`, ' . $groups . ')')->orderBy('lastname')->orderBy('firstname')->with('group');
 			} else {
 				$query = Subscriber::orderBy('id', 'desc');
 			}
 			if ($groupped && $gid) $query->where('group_id', $gid);
+			$page = $query->paginate(config('app.perpage'));
+			$groups = Group::getPageGroups($page);
       return response()->json([
-				'pages' => $query->paginate(config('app.perpage')),
-				//'groups' => $groups
+				'pages' => $page,
+				'groups' => $groups
 			]);
     }
 

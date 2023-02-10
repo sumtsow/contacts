@@ -37,11 +37,21 @@ class Group extends Model
 	}
 
 	private static function getChildList($group) {
-		$list1 = [];
-		$list1[] = $group->id;
+		$list = [];
+		$list[] = $group->id;
 		foreach ($group->children as $child) {
-			$list1 = array_merge($list1, self::getChildList($child));
+			$list = array_merge($list, self::getChildList($child));
 		}
-		return $list1;
+		return $list;
+	}
+
+	public static function getPageGroups($page = [])
+	{
+		if (!$page) return [];
+		$groups = [];
+		foreach ($page->items() as $subscriber) {
+			if (!isset($groups[$subscriber->group_id])) $groups[$subscriber->group_id] = $subscriber->group;
+		}
+    return $groups;
 	}
 }
