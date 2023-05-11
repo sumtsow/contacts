@@ -7,12 +7,17 @@
 			<p v-for="line of alert.errors">{{ line }}</p>
 		</div>
   </div>
-	<div class="row justify-content-end mb-3">
+	<div class="row">
+		<div class="col">
+			<search-input :handler="searchSubscribers"></search-input>
+		</div>
+	</div>
+	<div class="row justify-content-end my-3">
     <div class="col-auto">
       <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#subscriberEditModal" @click="clearSubscriber">Додати</button>
     </div>
   </div>
-		<page-nav :links="pages.links" :handler="getPage"></page-nav>
+	<page-nav :links="pages.links" :handler="getPage"></page-nav>
   <div class="row">
     <div class="col table-responsive">
       <table class="table table-striped">
@@ -149,11 +154,13 @@
   import Breadcrumbs from '../Breadcrumbs.vue';
 	import DateFormat from '../DateFormat.vue';
 	import PageNav from '../PageNav.vue';
+	import SearchInput from '../SearchInput.vue';
   export default {
     components: {
       Breadcrumbs,
 			DateFormat,
 			PageNav,
+			SearchInput,
     },
 		computed: {
 			alertClass() {
@@ -190,6 +197,7 @@
 				alert: null,
 				modalIsShown: false,
 				subscriberModal: {},
+				searchText: '',
       };
     },
     mounted() {
@@ -229,11 +237,12 @@
           });
       },
 			getPage(e) {
-        this.getSubscribers(parseInt(new URL(e.target.href).searchParams.get('page'), 10));
+				this.getSubscribers(parseInt(new URL(e.target.href).searchParams.get('page'), 10));
 			},
       getSubscribers(page) {
-        var app = this;
-        axios.get('/api/subscribers' + (page ? '?page=' + page : ''))
+        var app = this,
+						url = '/api/subscribers?' + (page ? 'page=' + page + '&' : '') + (this.searchText ? 'q=' + encodeURIComponent(this.searchText) : '');
+        axios.get(url)
           .then(function (resp) {
 						app.pages = resp.data.pages;
             app.subscribers = app.pages.data;
@@ -337,6 +346,10 @@
             }
           });
       },
+			searchSubscribers(e) {
+				this.searchText = e.target.value;
+				this.getSubscribers();
+			},
 			selectContact(contact) {
 				if (!contact) return;
 				this.currentContact = contact;

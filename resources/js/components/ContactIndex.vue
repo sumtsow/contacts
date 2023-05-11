@@ -4,6 +4,11 @@
   </div>
 	<div class="row">
 		<div class="col">
+			<search-input :handler="searchSubscribers"></search-input>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
 			<label for="group-select-box" class="form-label">Показати:</label>
 			<select v-model="selectedGroupId" id="group-select-box" class="form-select mb-3" @change="getSubscribers" :size="selectSize">
 				<template v-for="group of selectedGroupOptions">
@@ -16,9 +21,11 @@
 		<page-nav :links="pages.links" :handler="getPage"></page-nav>
 		<div class="row mb-3">
 			<div class="col">
-				<template v-for="group of groups">
-					<group-item :group="group" :level="defaultHeaderLevel" :subscribers="subscribers"></group-item>
-				</template>
+				<TransitionGroup>
+					<template v-for="group of groups" :key="group.id">
+						<group-item :group="group" :level="defaultHeaderLevel" :subscribers="subscribers"></group-item>
+					</template>
+				</TransitionGroup>
 			</div>
 		</div>
 		<page-nav :links="pages.links" :handler="getPage"></page-nav>
@@ -28,11 +35,13 @@
 	import GroupItem from './GroupItem.vue';
 	import GroupOption from './GroupOption.vue';
 	import PageNav from './PageNav.vue';
+	import SearchInput from './SearchInput.vue';
   export default {
 		components: {
       GroupItem,
 			GroupOption,
 			PageNav,
+			SearchInput,
     },
 		computed: {
 			selectSize() {
@@ -52,6 +61,7 @@
 				selectedGroupId: 0,
 				selectedGroupOptions: [],
 				defaultHeaderLevel: 2,
+				searchText: '',
       };
     },
     mounted() {
@@ -72,11 +82,12 @@
           });
       },
 			getPage(e) {
-        this.getSubscribers(parseInt(new URL(e.target.href).searchParams.get('page'), 10));
+				this.getSubscribers(parseInt(new URL(e.target.href).searchParams.get('page'), 10));
 			},
 			getSubscribers(page) {
-        var app = this;
-        axios.get('/api/subscribers/1' + (this.selectedGroupId ? '/' + this.selectedGroupId : '') + (page ? '?page=' + page : ''))
+        var app = this,
+						url = '/api/subscribers/1' + (this.selectedGroupId ? '/' + this.selectedGroupId : '') + '?' + (page ? 'page=' + page + '&' : '') + (this.searchText ? 'q=' + encodeURIComponent(this.searchText) : '');
+        axios.get(url)
           .then(function (resp) {
             app.pages = resp.data.pages;
 						app.groups = resp.data.groups;
@@ -86,6 +97,10 @@
 						app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати контакти!'] };
           });
       },
+			searchSubscribers(e) {
+				this.searchText = e.target.value;
+				this.getSubscribers();
+			},
     }
   };
 </script>
