@@ -23,31 +23,67 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>ID&nbsp;&darr;</th>
-            <th>Прізвище та ім'я</th>
-						<th>Група</th>
+            <th>
+							<a href="?s=i" @click.prevent="switchSortDir">ID</a>
+							<span class="ms-1" v-if="sortOrder === 'i'">
+								<span v-if="sortDir == '1'">&darr;</span>
+								<span v-else>&uarr;</span>
+							</span>
+						</th>
+            <th>
+							<a href="?s=n" @click.prevent="switchSortDir">Прізвище та ім'я</a>
+							<span class="ms-1" v-if="sortOrder === 'n'">
+								<span v-if="sortDir == '1'">&darr;</span>
+								<span v-else>&uarr;</span>
+							</span>
+						</th>
+						<th>
+							<a href="?s=g" @click.prevent="switchSortDir">Група</a>
+							<span class="ms-1" v-if="sortOrder === 'g'">
+								<span v-if="sortDir == '1'">&darr;</span>
+								<span v-else>&uarr;</span>
+							</span>
+						</th>
 						<th>Контакти</th>
-            <th>Статус</th>
-            <th>Створено</th>
-            <th>Оновлено</th>
+            <th>
+							<a href="?s=s" @click.prevent="switchSortDir">Статус</a>
+							<span class="ms-1" v-if="sortOrder === 's'">
+								<span v-if="sortDir == '1'">&darr;</span>
+								<span v-else>&uarr;</span>
+							</span>
+						</th>
+            <th>
+							<a href="?s=c" @click.prevent="switchSortDir">Створено</a>
+							<span class="ms-1" v-if="sortOrder === 'c'">
+								<span v-if="sortDir == '1'">&darr;</span>
+								<span v-else>&uarr;</span>
+							</span>
+						</th>
+            <th>
+							<a href="?s=u" @click.prevent="switchSortDir">Оновлено</a>
+							<span class="ms-1" v-if="sortOrder === 'u'">
+								<span v-if="sortDir == '1'">&darr;</span>
+								<span v-else>&uarr;</span>
+							</span>
+						</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="subscriber of subscribers" class="position-relative" :class="{ 'text-muted': !subscriber.enabled }" data-bs-toggle="modal" data-bs-target="#subscriberEditModal" @click="selectSubscriber(subscriber)" style="cursor: pointer">
-              <td>{{ subscriber.id }}</td>
-              <td>{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
-							<td>{{ groupTitle(subscriber.group_id) }}</td>
-							<td>
-								<div v-for="contact of subscriber.contact" :class="{ 'text-muted': !contact.enabled }">{{ contact.value }}</div>
-							</td>
-              <td>
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" :id="['enabled-' + subscriber.id]" :checked="subscriber.enabled == 1" disabled />
-                  <label class="form-check-label" :for="['enabled-' + subscriber.id]" />
-                </div>
-              </td>
-              <td><date-format :date="subscriber.created_at"/></td>
-              <td><date-format :date="subscriber.updated_at"/></td>
+						<td>{{ subscriber.id }}</td>
+						<td>{{ subscriber.lastname }} {{ subscriber.firstname }}</td>
+						<td>{{ groupTitle(subscriber.group_id) }}</td>
+						<td>
+							<div v-for="contact of subscriber.contact" :class="{ 'text-muted': !contact.enabled }">{{ contact.value }}</div>
+						</td>
+						<td>
+							<div class="form-check form-switch">
+								<input class="form-check-input" type="checkbox" :id="['enabled-' + subscriber.id]" :checked="subscriber.enabled == 1" disabled />
+								<label class="form-check-label" :for="['enabled-' + subscriber.id]" />
+							</div>
+						</td>
+						<td><date-format :date="subscriber.created_at"/></td>
+						<td><date-format :date="subscriber.updated_at"/></td>
           </tr>
         </tbody>
       </table>
@@ -198,6 +234,8 @@
 				modalIsShown: false,
 				subscriberModal: {},
 				searchText: '',
+				sortOrder: 'i',
+				sortDir: '1',
       };
     },
     mounted() {
@@ -237,11 +275,12 @@
           });
       },
 			getPage(e) {
-				this.getSubscribers(parseInt(new URL(e.target.href).searchParams.get('page'), 10));
+				if (e) this.getSubscribers(parseInt(new URL(e.target.href).searchParams.get('page'), 10))
+				else this.getSubscribers(parseInt(this.$route.query.page, 10));
 			},
       getSubscribers(page) {
         var app = this,
-						url = '/api/subscribers?' + (page ? 'page=' + page + '&' : '') + (this.searchText ? 'q=' + encodeURIComponent(this.searchText) : '');
+						url = '/api/subscribers?s=' + this.sortOrder + '&d=' + this.sortDir + (page ? '&page=' + page : '') + (this.searchText ? '&q=' + encodeURIComponent(this.searchText) : '');
         axios.get(url)
           .then(function (resp) {
 						app.pages = resp.data.pages;
@@ -381,6 +420,12 @@
 				this.subscriberModal.addEventListener('hide.bs.modal', () => {
 					app.modalIsShown = false;
 				});
+			},
+			switchSortDir(e) {
+				var params = new URL(e.target.href).searchParams;
+				this.sortOrder = params.get('s');
+				this.sortDir = 1 - this.sortDir;
+				this.getPage();
 			},
     },
   };

@@ -21,12 +21,34 @@ class SubscriberController extends Controller
     public function index(int $groupped = 0, int $gid = 0, Request $request)
     {
 			$groups = [];
-			$q = urldecode($request->get('q'));
+			$q = urldecode($request->query('q', false));
+			$sortDir = $request->query('d', false);
+			$sortDir = $sortDir ? 'desc' : 'asc';
+			$sortOrder = $request->query('s', false);
 			if ($groupped) {
 				$groups = implode(', ', Group::getList());
 				$query = Subscriber::orderByRaw('FIELD(`group_id`, ' . $groups . ')')->orderBy('lastname')->orderBy('firstname')->with('group');
 			} else {
-				$query = Subscriber::orderBy('id', 'desc');
+				switch ($sortOrder) {
+					case 'n':
+						$query = Subscriber::orderBy('lastname', $sortDir)->orderBy('firstname');
+						break;
+					case 'g':
+						$query = Subscriber::orderBy('group_id', $sortDir)->orderBy('lastname', $sortDir)->orderBy('firstname');
+						break;
+					case 's':
+						$query = Subscriber::orderBy('enabled', $sortDir)->orderBy('lastname', $sortDir)->orderBy('firstname');
+						break;
+					case 'c':
+						$query = Subscriber::orderBy('created_at', $sortDir)->orderBy('lastname', $sortDir)->orderBy('firstname');
+						break;
+					case 'u':
+						$query = Subscriber::orderBy('updated_at', $sortDir)->orderBy('lastname', $sortDir)->orderBy('firstname');
+						break;
+					case 'i':
+					default:
+						$query = Subscriber::orderBy('id', $sortDir)->orderBy('lastname', $sortDir)->orderBy('firstname');
+				}
 			}
 			if ($groupped && $gid) $query->where('group_id', $gid);
 			if ($q) $query->where('firstname', 'like', '%'.$q.'%')->orwhere('lastname', 'like', '%'.$q.'%');
