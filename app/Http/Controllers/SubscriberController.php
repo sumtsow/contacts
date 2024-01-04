@@ -7,6 +7,7 @@ use App\Models\Subscriber;
 use App\Http\Requests\StoreSubscriberRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class SubscriberController extends Controller
 {
@@ -51,7 +52,9 @@ class SubscriberController extends Controller
 				}
 			}
 			if ($groupped && $gid) $query->where('group_id', $gid);
-			if ($q) $query->where('firstname', 'like', '%'.$q.'%')->orwhere('lastname', 'like', '%'.$q.'%');
+				if ($q) $query->where('firstname', 'like', '%'.$q.'%')->orwhere('lastname', 'like', '%'.$q.'%')->orwhereHas('contact', function (Builder $qu) use ($q) {
+			$qu->where('value', 'like', '%'.$q.'%');
+});
 			$page = $query->paginate(config('app.perpage'));
 			$groups = Group::getPageGroups($page);
       return response()->json([
