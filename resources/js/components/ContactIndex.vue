@@ -86,7 +86,7 @@
 			},
 			getSubscribers(page) {
         var app = this,
-						url = '/api/subscribers/1' + (this.selectedGroupId ? '/' + this.selectedGroupId : '') + '?' + (page ? 'page=' + page + '&' : '') + (this.searchText ? 'q=' + encodeURIComponent(this.searchText) : '');
+						url = '/api/subscribers/1/' + (this.selectedGroupId ? '' + this.selectedGroupId : '0') + '?' + (page ? 'page=' + page + '&' : '') + (this.searchText ? 'q=' + encodeURIComponent(this.searchText) : '');
         axios.get(url)
           .then(function (resp) {
             app.pages = resp.data.pages;

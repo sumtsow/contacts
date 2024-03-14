@@ -121,7 +121,6 @@
 						app.groupSelectOptions = [...app.groups];
 						app.groupSelectOptions.unshift(app.emptyGroup);
 						app.groupSelectOptions[0].title = 'немає';
-						console.log(app.groupSelectOptions);
           })
           .catch(function () {
             app.alert = { message: 'Помилка завантаження',  errors: ['Не вдається отримати групи!'] };

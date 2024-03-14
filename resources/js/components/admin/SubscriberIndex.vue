@@ -280,7 +280,7 @@
 			},
       getSubscribers(page) {
         var app = this,
-						url = '/api/subscribers?s=' + this.sortOrder + '&d=' + this.sortDir + (page ? '&page=' + page : '') + (this.searchText ? '&q=' + encodeURIComponent(this.searchText) : '');
+						url = '/api/subscribers/0/0?s=' + this.sortOrder + '&d=' + this.sortDir + (page ? '&page=' + page : '') + (this.searchText ? '&q=' + encodeURIComponent(this.searchText) : '');
         axios.get(url)
           .then(function (resp) {
 						app.pages = resp.data.pages;
